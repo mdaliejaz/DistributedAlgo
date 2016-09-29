@@ -1,0 +1,16 @@
+import da
+import queue
+
+class Cache(process):
+    def setup():
+        self.timestampQueue = {}
+        # Tentative Maps
+
+    def addTimestampToQueue(subjectId, timestamp):
+        if subjectID not in timestampQueue:
+            timestampQueue[subjectID] = queue.Queue()
+
+        timestampQueue[subjectId].put(timestamp)
+
+    def getTimestampFromQueue(subjectId):
+        return timestampQueue[subjectId]
