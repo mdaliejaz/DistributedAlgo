@@ -1,0 +1,129 @@
+====================Coordinator JUNK====================
+import sys
+import da
+import uuid
+
+class Coordinator(process):
+    def setup(subjectID: int,
+                resourceID: int,
+                isSubjectCoordinator: bool,
+                cache: Cache):
+        pass
+
+    def evaluatePolicy():
+        evaluationID = getUniqueID()
+        timestamp = logical_clock()
+        cache.addTimestampToQueue(subjectID, timestamp)
+
+    def getUniqueID():
+       return uuid.uuid4()
+
+    def receive(msg= ('client',)):
+
+	def receive(msg= ('worker',subjectID, resourceID)):
+		output('hello')
+		
+    def run():
+    	await false
+		
+		await(received(('done',)))
+        if isSubjectCoordinator:
+            evaluate_policy()
+        else:
+            # call resource coordinator method
+=-0
+        output('terminating')
+
+
+class Worker(process):
+    def setup(subjectID: int, resourceID: int): pass
+
+
+class P(process):
+    def setup(s:set, nrequests:int):  # s is set of all other processes
+        self.q = set()
+
+    def mutex(task):
+        -- request
+        c = logical_clock()
+        send(('request', c, self.id), to= s)
+        q.add(('request', c, self.id))
+        await(each(('request', c2, p) in q,
+                   has= (c2, p)==(c, self.id) or (c, self.id) < (c2, p)) and
+              each(p in s, has= some(received(('ack', c2, _p)), has= c2 > c)))
+        -- critical_section
+        task()
+        -- release
+        q.remove(('request', c, self.id))
+        send(('release', logical_clock(), self.id), to= s)
+
+    def receive(msg= ('request', c2, p)):
+        q.add(('request', c2, p))
+        send(('ack', logical_clock(), self.id), to= p)
+
+    def receive(msg= ('release', _, p)):
+#        q.remove(('request', _, p))  # pattern matching needed for _
+#        q.remove(anyof(setof(('request', c, p), ('request', c, _p) in q)))
+        for x in setof(('request', c, p), ('request', c, _p) in q):
+            q.remove(x); break
+#        for ('request', c, _p) in q: q.remove('request', c, p); break
+#        for (tag, c, p2) in q:
+#            if tag == 'request' and p2 == p:
+#                q.remove((tag, c, p2)); break
+
+    def run():
+        def task():
+            output('in cs')
+        for i in range(nrequests):
+            mutex(task)
+
+        send(('done', self.id), to= s)
+        await(each(p in s, has= received(('done', p))))
+        output('terminating')
+
+        
+        
+====================MASTER JUNK====================
+import sys
+import da
+import runpy
+import os.path as path
+
+_config_object = {}
+binpath = sys.path[0]
+rootpath = path.dirname(path.abspath(binpath))
+sys.path.insert(0, rootpath)
+sys.path.insert(0, '.')
+del binpath
+del rootpath
+del path
+sys._real_argv = sys.argv[0]
+runpy.run_module('da', run_name='__main__', alter_sys=True)
+
+
+def main():
+    nprocs = int(sys.argv[1]) if len(sys.argv) > 1 else 10
+    nrequests = int(sys.argv[2]) if len(sys.argv) > 2 else 1
+
+	# n coordinators started and stored in a set 
+    config(channel= 'fifo', clock= 'Lamport')
+
+    ps = new(P, num= nprocs)
+    for p in ps: setup(p, (ps-{p}, nrequests))
+    start(ps)
+
+    
+def main():
+    nacceptors = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+    nproposers = int(sys.argv[2]) if len(sys.argv) > 2 else 3
+    nlearners = int(sys.argv[3]) if len(sys.argv) > 3 else 3
+
+    acceptors = new(Acceptor, num= nacceptors)
+    proposers = new(Proposer, (acceptors,), num= nproposers)
+    learners = new(Learner, (acceptors,), num= nlearners)
+    for p in acceptors: setup(p, (learners,))
+    start(acceptors | proposers | learners)
+
+    for p in learners: p.join()
+    print('done')
+    da.send(('done',), to= (acceptors|proposers))  # da.send not in da-lang
