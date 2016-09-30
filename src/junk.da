@@ -82,7 +82,11 @@ class P(process):
         output('terminating')
 
         
-        
+       	def setup(coordinators:list, size):
+		self.coordinators = coordinators
+		self.size = size
+		self.workers = new(Worker, num= 1)
+		start(self.workers) 
 ====================MASTER JUNK====================
 import sys
 import da
@@ -127,3 +131,48 @@ def main():
     for p in learners: p.join()
     print('done')
     da.send(('done',), to= (acceptors|proposers))  # da.send not in da-lang
+    
+    
+    
+    
+    
+    import sys
+import da
+import coordinator as coord
+import cache as cache
+
+def main():
+	config(channel= 'fifo', clock= 'Lamport')
+	ncoordinators = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+	coordinators = new(coord.Coordinator, num= ncoordinators)
+	listcoord = list(coordinators)
+	#cacheInstance = new(cache.Cache, num= 1)
+	#start(cacheInstance)
+	#cacheInstance.pop().hell()
+	setup(coordinators, (listcoord, ncoordinators))
+	start(coordinators)
+	da.send(('client',1,2), to=coordinators)
+	#da.send(('worker',), to=coordinators)
+	
+	
+	
+	import sys
+import da
+import coordinator as coord
+import cache as cache
+import utils
+
+def main():
+	config(channel= 'fifo', clock= 'Lamport')
+	ncoordinators = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+	coordinators = new(coord.Coordinator, num= ncoordinators)
+	listcoord = list(coordinators)
+	#cacheInstance = new(cache.Cache, num= 1)
+	#start(cacheInstance)
+	#cacheInstance.pop().hell()
+	utils.LIST_OF_COORDINATORS = listcoord
+	#setup(coordinators, (listcoord, ncoordinators))
+	setup(coordinators, ())
+	start(coordinators)
+	da.send(('client',1,2), to=coordinators)
+	#da.send(('worker',), to=coordinators)

@@ -2,23 +2,58 @@ import sys
 import da
 import uuid
 
+class Request:
+	def __init__(self):
+		self.data = 0
+
 class Coordinator(process):
-	def setup():
-		pass
+	def setup(coordinators:list, size):
+		self.coordinators = coordinators
+		self.size = size
+		self.workers = new(Worker, num= 1)
+		setup(self.workers, (self.coordinators, self.size))
+		start(self.workers)
 
 	def evaluatePolicy():
 		evaluationID = getUniqueID()
 		timestamp = logical_clock()
 
+	def receive(msg= ('resource_coord',subjectID, resourceID)):
+		# call worker send
+		output('hello from resource coordinator resource')
+		send(('worker_assign',subjectID, resourceID), to=workers)
+
 	def getUniqueID():
 		return uuid.uuid4()
 
-	def receive(msg= ('client',)):
+	def receive(msg= ('worker_response',subjectID,resourceID)):
+		output('worker hello')
+
+	def receive(msg= ('client',subjectID, resourceID)):
 		output('client hello')
-		
-	def receive(msg= ('worker',subjectID, resourceID)):
-		output('worker hello - ' + str(subjectID))
+		#output('client hello - ' + str(subjectID) + ' ' + cacheInstance.hell())
+		# process and send to authorize of Resource coordinator
+		id = int(resourceID) % size
+		output("blah"+str(id))
+		send(('resource_coord',subjectID,resourceID), to=(coordinators[id]))
 
 	def run():
 		output('starting...')
+		await(received(('done',)))
+
+class Worker(process):
+
+	def setup(coordinators:list, size):
+		self.coordinators = coordinators
+		self.size = size
+
+	def receive(msg= ('worker_assign',subjectID, resourceID)):
+		# policy evaluation from central source
+		# send to subject coordinator
+		output('worker received')
+		id = int(subjectID) % size
+		send(('worker_response',subjectID, resourceID), to=(coordinators[id]))
+
+	def run():
+		output('worker starting...')
 		await(received(('done',)))

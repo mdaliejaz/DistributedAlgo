@@ -1,11 +1,17 @@
 import sys
 import da
 import coordinator as coord
+import cache as cache
 
 def main():
 	config(channel= 'fifo', clock= 'Lamport')
 	ncoordinators = int(sys.argv[1]) if len(sys.argv) > 1 else 3
 	coordinators = new(coord.Coordinator, num= ncoordinators)
-	start(coordinators)	
-	da.send(('worker',1,2), to=coordinators)
-	da.send(('client',), to=coordinators)
+	listcoord = list(coordinators)
+	#cacheInstance = new(cache.Cache, num= 1)
+	#start(cacheInstance)
+	#cacheInstance.pop().hell()
+	setup(coordinators, (listcoord, ncoordinators))
+	start(coordinators)
+	da.send(('client',1,2), to=listcoord[1])
+	#da.send(('worker',), to=coordinators)

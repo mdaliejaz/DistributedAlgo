@@ -2,15 +2,22 @@ import da
 import queue
 
 class Cache(process):
-    def setup():
-        self.timestampQueue = {}
-        # Tentative Maps
+	def setup():
+		self.timestampQueue = {}
+		# Tentative Maps
 
-    def addTimestampToQueue(subjectId, timestamp):
-        if subjectID not in timestampQueue:
-            timestampQueue[subjectID] = queue.Queue()
+	def addTimestampToQueue(subjectId, timestamp):
+		if subjectId not in timestampQueue:
+			timestampQueue[subjectId] = queue.Queue()
 
-        timestampQueue[subjectId].put(timestamp)
+		timestampQueue[subjectId].put(timestamp)
 
-    def getTimestampFromQueue(subjectId):
-        return timestampQueue[subjectId]
+	def getTimestampFromQueue(subjectId):
+		return timestampQueue[subjectId]
+
+	def hell():
+		return -123
+
+	def run():
+		output('cache starting...')
+		await(received(('done',)))
