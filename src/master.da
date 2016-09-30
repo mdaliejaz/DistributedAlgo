@@ -1,7 +1,7 @@
 import sys
 import da
 import coordinator as coord
-import cache as cache
+import cache
 
 def main():
 	config(channel= 'fifo', clock= 'Lamport')
@@ -14,4 +14,4 @@ def main():
 	setup(coordinators, (listcoord, ncoordinators))
 	start(coordinators)
 	da.send(('client',1,2), to=listcoord[1])
-	#da.send(('worker',), to=coordinators)
+	

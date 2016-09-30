@@ -3,13 +3,16 @@ import da
 import uuid
 
 class Request:
-	def __init__(self):
-		self.data = 0
-
+	def __init__(self, subjectID, resourceID, timestamp):
+		self._subjectID = subjectID
+		self._resourceID = resourceID
+		self._timestamp = timestamp
+		# More
 class Coordinator(process):
 	def setup(coordinators:list, size):
 		self.coordinators = coordinators
 		self.size = size
+		# Change to n workers and decide later
 		self.workers = new(Worker, num= 1)
 		setup(self.workers, (self.coordinators, self.size))
 		start(self.workers)
@@ -18,10 +21,10 @@ class Coordinator(process):
 		evaluationID = getUniqueID()
 		timestamp = logical_clock()
 
-	def receive(msg= ('resource_coord',subjectID, resourceID)):
+	def receive(msg= ('resource_coord',request)):
 		# call worker send
-		output('hello from resource coordinator resource')
-		send(('worker_assign',subjectID, resourceID), to=workers)
+		output('hello from resource coordinator resource - ' + str(request._subjectID))
+		send(('worker_assign',request._subjectID, request._resourceID), to=workers)
 
 	def getUniqueID():
 		return uuid.uuid4()
@@ -31,14 +34,13 @@ class Coordinator(process):
 
 	def receive(msg= ('client',subjectID, resourceID)):
 		output('client hello')
-		#output('client hello - ' + str(subjectID) + ' ' + cacheInstance.hell())
 		# process and send to authorize of Resource coordinator
 		id = int(resourceID) % size
-		output("blah"+str(id))
-		send(('resource_coord',subjectID,resourceID), to=(coordinators[id]))
+		request = Request(subjectID, resourceID, 1) # 1 is a dummy timestamp now
+		send(('resource_coord',request), to=(coordinators[id]))
 
 	def run():
-		output('starting...')
+		output('coordinator starting...')
 		await(received(('done',)))
 
 class Worker(process):
