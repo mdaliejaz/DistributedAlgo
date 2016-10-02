@@ -2,7 +2,7 @@
 import queue
 
 class Cache(object):
-    def setup():
+    def __init__(self):
         self.timestampQueue = {}
         # Tentative Maps
 
@@ -15,7 +15,7 @@ class Cache(object):
     def getTimestampFromQueue(subjectId):
         return timestampQueue[subjectId]
 
-    def hell():
-        return -123
+    def life(self):
+        return 42
 
 cache = Cache()

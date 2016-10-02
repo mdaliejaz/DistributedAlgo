@@ -1,0 +1,19 @@
+import sys
+import da
+import xml.etree.ElementTree as ET
+
+class Database(process):
+	def setup(file:str):
+		self.root = ET.parse(file).getroot()
+		self.subjectMap = {}
+		self.resourceMap = {}
+		
+	def run():
+		output('database starting...')			
+		for subject in root.iter('subject'):
+			for attributes in subject:
+				subjectMap[subject.attrib['id']] = attributes.attrib
+		for resource in root.iter('resource'):
+			for attributes in resource:
+				resourceMap[resource.attrib['id']] = attributes.attrib
+		await(received(('done',)))

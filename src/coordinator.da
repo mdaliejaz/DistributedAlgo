@@ -3,11 +3,30 @@ import da
 import uuid
 
 class Request:
-	def __init__(self, subjectID, resourceID, timestamp):
+	def __init__(self, subjectID, resourceID, timestamp, action):
 		self._subjectID = subjectID
 		self._resourceID = resourceID
 		self._timestamp = timestamp
+		self._action = action
 		# More
+
+class Worker(process):
+
+	def setup(coordinators:list, size):
+		self.coordinators = coordinators
+		self.size = size
+
+	def receive(msg= ('worker_assign',subjectID, resourceID)):
+		# policy evaluation from central source
+		# send to subject coordinator
+		output('worker received')
+		id = int(subjectID) % size
+		send(('worker_response',subjectID, resourceID), to=(coordinators[id]))
+
+	def run():
+		output('worker starting...')
+		await(received(('done',)))
+
 class Coordinator(process):
 	def setup(coordinators:list, size):
 		self.coordinators = coordinators
@@ -36,26 +55,10 @@ class Coordinator(process):
 		output('client hello')
 		# process and send to authorize of Resource coordinator
 		id = int(resourceID) % size
-		request = Request(subjectID, resourceID, 1) # 1 is a dummy timestamp now
+		request = Request(subjectID, resourceID, 1, "action") # 1 is a dummy timestamp now
+		evaluatePolicy()
 		send(('resource_coord',request), to=(coordinators[id]))
 
 	def run():
 		output('coordinator starting...')
-		await(received(('done',)))
-
-class Worker(process):
-
-	def setup(coordinators:list, size):
-		self.coordinators = coordinators
-		self.size = size
-
-	def receive(msg= ('worker_assign',subjectID, resourceID)):
-		# policy evaluation from central source
-		# send to subject coordinator
-		output('worker received')
-		id = int(subjectID) % size
-		send(('worker_response',subjectID, resourceID), to=(coordinators[id]))
-
-	def run():
-		output('worker starting...')
 		await(received(('done',)))
