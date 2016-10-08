@@ -3,19 +3,20 @@ import da
 import coordinator as coord
 import database as db
 import cache
+import configparser
 
 def main():
-	config(channel= 'fifo', clock= 'Lamport')
-	ncoordinators = int(sys.argv[1]) if len(sys.argv) > 1 else 3
+	config = configparser.ConfigParser();
+	config.read(str(sys.argv[1]))
+	
+	ncoordinators = int(config.get("setup", "ncoordinators"))
+	dInitFile = str(config.get("setup", "dInitFile"))
 	coordinators = new(coord.Coordinator, num= ncoordinators)
 	dbInstance = new(db.Database, num= 1)
 	listcoord = list(coordinators)
 
-	cacheInstance = cache.Cache()
-	print(cacheInstance.life())
-
-	setup(dbInstance, ("../config/dbPolicy.xml",))
-	setup(coordinators, (listcoord, ncoordinators))
+	setup(dbInstance, (dInitFile,))
+	setup(coordinators, (listcoord, dbInstance, config))
 	start(dbInstance)
 	start(coordinators)
 	da.send(('client',1,2), to=listcoord[1])

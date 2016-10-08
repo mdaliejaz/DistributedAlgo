@@ -5,12 +5,12 @@ import worker as wor
 from util import Request
 
 class Coordinator(process):
-	def setup(coordinators:list, size):
+	def setup(coordinators:list, dbInstance, config):
 		self.coordinators = coordinators
-		self.size = size
-		# Change to n workers and decide later
+		self.size = len(coordinators)
+		# TODO: Change to n workers and decide later
 		self.workers = new(wor.Worker, num= 1)
-		setup(self.workers, (self.coordinators, self.size))
+		setup(self.workers, (self.coordinators, dbInstance, config))
 		start(self.workers)
 
 	def evaluatePolicy():

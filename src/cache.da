@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import queue
 
 class Cache(object):
@@ -17,5 +16,3 @@ class Cache(object):
 
     def life(self):
         return 42
-
-cache = Cache()

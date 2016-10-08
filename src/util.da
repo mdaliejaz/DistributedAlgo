@@ -4,3 +4,10 @@ class Request(object):
 		self._resourceID = resourceID
 		self._action = action
 		# More
+
+class PolicyRule(object):
+	def __init__(self, subjectCondition, resourceCondition, subjectUpdate, resourceUpdate):
+		self.subjectCondition = subjectCondition
+		self.resourceCondition = resourceCondition
+		self.subjectUpdate = subjectUpdate
+		self.resourceUpdate = resourceUpdate
