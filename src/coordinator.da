@@ -13,7 +13,7 @@ class Coordinator(process):
 	    self.size = len(coordinators)
 	    # Change to n workers and decide later
 	    self.workers = new(wor.Worker, num= 1)
-	    setup(self.workers, (self.coordinators,))
+	    setup(self.workers, (self.coordinators, dbInstance, config,))
 	    start(self.workers)
 
 	def evaluatePolicy():

@@ -38,3 +38,5 @@ class Worker(process):
 			if (act["name"] not in self.policyMap):
 				self.policyMap[act["name"]] = []
 			self.policyMap[act["name"]].append(PolicyRule(sc,rc,su,ru))
+			
+		print(self.policyMap)
