@@ -1,12 +1,33 @@
 import sys
 import da
 import xml.etree.ElementTree as ET
+from util import DBResponse
 
 class Database(process):
 	def setup(file:str):
 		self.root = ET.parse(file).getroot()
 		self.subjectMap = {}
 		self.resourceMap = {}
+	
+	def receive(msg= ('worker_get_from_db',request), from_= p):
+		evaluation = True
+		subjAttribDiff = {}
+		resourceAttribDiff = {}
+		try:
+			subjAttribDb = set(self.subjectMap[request.subjectID].keys())
+			resourceAttribDb = set(self.resourceMap[request.resourceID].keys())
+			subjAttribDiffSet = subjAttribDb - set(request.subjectAttributeMap.keys())
+			resourceAttribDiffSet = resourceAttribDb - set(request.resourceAttributeMap.keys())
+			for subj in subjAttribDiffSet:
+				subjAttribDiff[subj] = self.subjectMap[request.subjectID][subj]
+			for resource in resourceAttribDiffSet:
+				resourceAttribDiff[resource] = self.resourceMap[request.resourceID][resource]
+		except:
+			evaluation = False
+
+		response = DBResponse(request, subjAttribDiff, resourceAttribDiff, evaluation)
+		send(('db_work_done',response), to= p)
+		
 		
 	def run():
 		output('database starting...')			

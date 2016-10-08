@@ -17,7 +17,6 @@ class Coordinator(process):
 	    setup(self.workers, (self.coordinators, dbInstance, config,))
 	    start(self.workers)
 
-
     # resource coordinator instance
     # receive from subject coordinator
     # send to worker

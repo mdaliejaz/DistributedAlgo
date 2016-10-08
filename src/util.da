@@ -11,13 +11,20 @@ class Request(object):
 
 
 class Response(object):
-	def __init__(self, request, evaluation, toUpdateSubjectMap, toUpdateResourceMap):
+	def __init__(self, request, evaluation, dbSubjectMap, dbResourceMap):
 	    self.request = request
 	    self.evaluation = evaluation
+	    self.dbSubjectMap = dbSubjectMap
+	    self.dbResourceMap = dbResourceMap
+
+
+class DBResponse(object):
+	def __init__(self, dbresponse, evaluation, toUpdateSubjectMap, toUpdateResourceMap):
+	    self.dbresponse = dbresponse
+	    # These are different from the ones returned by DB
 	    self.toUpdateSubjectMap = toUpdateSubjectMap
 	    self.toUpdateResourceMap = toUpdateResourceMap
-
-
+	    
 class PolicyRule(object):
 	def __init__(self, subjectCondition, resourceCondition, subjectUpdate, resourceUpdate):
 		self.subjectCondition = subjectCondition

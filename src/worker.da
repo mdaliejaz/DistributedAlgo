@@ -10,14 +10,37 @@ class Worker(process):
 		self.policyMap = {}
 		readPolicy(config.get("setup", "policyFile"))
 
-
 	def receive(msg= ('WORKER_ASSIGN', request)):
-		# policy evaluation from central source
-		# send to subject coordinator
-		output('worker received')
-		id = int(request.subjectID) % len(self.coordinators)
-		send(('WORKER_RESPONSE', Response(request, None, None, None)), to=(coordinators[id]))
-
+		# policy evaluation
+		output('worker received for subject id ' + request.subjectID)
+		send(('worker_get_from_db',request), to=dbInstance)
+	
+	def validateRule(conditions, attribMap):
+		for k in conditions.keys():
+			# Check value condition function
+			pass
+		return True
+		
+	def receive(msg= ('db_work_done',dbresponse)):
+		subjAttribReqd = {**dbresponse.dbSubjectMap,
+			**dbresponse.request.subjectAttributeMap} # Works in python 3.5 and above
+		resourceAttribReqd = {**dbresponse.dbResourceMap,
+			**dbresponse.request.resourceAttributeMap} # Works in python 3.5 and above
+		
+		ruleMatch = False
+		for rule in policyMap[dbresponse.request.action]:
+			if (validateRule(rule.subjectConditions,subjAttribReqd) and
+				validateRule(rule.subjectConditions,subjAttribReqd)):
+				ruleMatch = True
+				break
+		# If no rule has matched
+		if ruleMatch == False:
+			dbresponse.evaluation = False
+		
+		response = Response(dbresponse, None, None)	
+		id = int(dbresponse.request.subjectID) % size
+		send(('WORKER_RESPONSE',response), to=(coordinators[id]))
+			
 	def run():
 		output('worker starting...')
 		await(received(('done',)))
