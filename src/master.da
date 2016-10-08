@@ -2,7 +2,6 @@ import sys
 import da
 import coordinator as coord
 import database as db
-import cache
 import configparser
 
 def main():

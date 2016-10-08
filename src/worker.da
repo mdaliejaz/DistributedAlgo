@@ -4,7 +4,6 @@ import xml.etree.ElementTree as ET
 from util import PolicyRule
 
 class Worker(process):
-
 	def setup(coordinators:list, dbInstance, config):
 		self.coordinators = coordinators
 		self.size = len(coordinators)
