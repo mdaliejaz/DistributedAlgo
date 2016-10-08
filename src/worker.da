@@ -2,6 +2,7 @@ import sys
 import da
 import xml.etree.ElementTree as ET
 from util import PolicyRule
+from util import Response
 
 class Worker(process):
 	def setup(coordinators:list, dbInstance, config):
@@ -15,7 +16,7 @@ class Worker(process):
 		# send to subject coordinator
 		output('worker received')
 		id = int(request.subjectID) % len(self.coordinators)
-		send(('worker_response',request.subjectID, request.resourceID), to=(coordinators[id]))
+		send(('WORKER_RESPONSE', Response(request, None, None, None)), to=(coordinators[id]))
 
 	def run():
 		output('worker starting...')

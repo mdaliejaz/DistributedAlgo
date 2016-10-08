@@ -18,6 +18,9 @@ class Coordinator(process):
 	    start(self.workers)
 
 
+    # resource coordinator instance
+    # receive from subject coordinator
+    # send to worker
 	def receive(msg= ('RESOURCE_COORDINATOR', request)):
 	    # create resource attribute map
 	    resourceAttributeMap = {}
@@ -39,11 +42,17 @@ class Coordinator(process):
 	    send(('WORKER_ASSIGN',request), to=workers)
 
 
-	def receive(msg= ('worker_response',subjectID,resourceID)):
-		output('worker hello, subjectID='+str(subjectID)+', resource='+str(resourceID))
+    # subject coordinator instance
+    # receive from worker
+    # send to resource coordinator
+	def receive(msg= ('WORKER_RESPONSE', response)):
+		output('worker hello, subjectID='+str(response.request.subjectID)+', resource='+str(response.request.resourceID))
+		# check for conflict
 
 
+    # subject coordinator instance
     # receive from client
+    # send to resource coordinator
 	def receive(msg= ('CLIENT', subjectID, resourceID, action)):
 		output('client hello subjectID='+str(subjectID)+', resourceID='+str(resourceID))
 		# generate unique request ID and put in queue (lock?)
