@@ -1,18 +1,15 @@
-import queue
-
 class Cache(object):
     def __init__(self):
-        self.timestampQueue = {}
-        # Tentative Maps
+        self.map = {}
 
-    def addTimestampToQueue(subjectId, timestamp):
-        if subjectId not in timestampQueue:
-            timestampQueue[subjectId] = queue.Queue()
 
-        timestampQueue[subjectId].put(timestamp)
+    def add(id, value, timestamp):
+        val=(value, timestamp)
+        map[id] = val
 
-    def getTimestampFromQueue(subjectId):
-        return timestampQueue[subjectId]
 
-    def life(self):
-        return 42
+    def get(id):
+        val = map['id']
+        if (val):
+            return val[0], val[1]
+        return None, None

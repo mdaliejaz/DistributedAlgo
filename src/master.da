@@ -13,10 +13,9 @@ def main():
 	coordinators = new(coord.Coordinator, num= ncoordinators)
 	dbInstance = new(db.Database, num= 1)
 	listcoord = list(coordinators)
-
 	setup(dbInstance, (dInitFile,))
 	setup(coordinators, (listcoord, dbInstance, config))
 	start(dbInstance)
 	start(coordinators)
-	da.send(('client',1,2), to=listcoord[1])
+	da.send(('CLIENT',1,2,'read'), to=listcoord[1])
 	

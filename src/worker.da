@@ -6,16 +6,16 @@ from util import PolicyRule
 class Worker(process):
 	def setup(coordinators:list, dbInstance, config):
 		self.coordinators = coordinators
-		self.size = len(coordinators)
 		self.policyMap = {}
 		readPolicy(config.get("setup", "policyFile"))
 
-	def receive(msg= ('worker_assign',subjectID, resourceID)):
+
+	def receive(msg= ('WORKER_ASSIGN', request)):
 		# policy evaluation from central source
 		# send to subject coordinator
 		output('worker received')
-		id = int(subjectID) % size
-		send(('worker_response',subjectID, resourceID), to=(coordinators[id]))
+		id = int(request.subjectID) % len(self.coordinators)
+		send(('worker_response',request.subjectID, request.resourceID), to=(coordinators[id]))
 
 	def run():
 		output('worker starting...')

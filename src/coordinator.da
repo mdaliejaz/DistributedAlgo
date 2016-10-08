@@ -1,43 +1,71 @@
 import sys
 import da
 import uuid
-import worker as wor
+import worker
 from util import Request
 import cache
+import queue
 
 class Coordinator(process):
 	def setup(coordinators:list, dbInstance, config):
-	    tentativeCache = cache.Cache()
-	    mainCache = cache.Cache()
+	    self.tentativeCache = {}
+	    self.mainCache = {}
+	    self.requestQueue = queue.Queue()
 	    self.coordinators = coordinators
-	    self.size = len(coordinators)
 	    # Change to n workers and decide later
-	    self.workers = new(wor.Worker, num= 1)
+	    self.workers = new(worker.Worker, num= 1)
 	    setup(self.workers, (self.coordinators, dbInstance, config,))
 	    start(self.workers)
 
-	def evaluatePolicy():
-		evaluationID = getUniqueID()
-		timestamp = logical_clock()
 
-	def receive(msg= ('resource_coord',request)):
-		# call worker send
-		output('hello from resource coordinator resource - ' + str(request._subjectID))
-		send(('worker_assign',request._subjectID, request._resourceID), to=workers)
+	def receive(msg= ('RESOURCE_COORDINATOR', request)):
+	    # create resource attribute map
+	    resourceAttributeMap = {}
+	    for key, val in tentativeCache.items():
+	        resourceAttributeMap[key] = val
+	    for key, val in mainCache.items():
+	        if not resourceAttributeMap.has_key(key):
+	            resourceAttributeMap[key] = val
 
-	def getUniqueID():
-		return uuid.uuid4()
+	    # update request with resourceAttributeMap
+	    updatedRequest = Request(request.requestID,
+	                                request.subjectID,
+	                                request.resourceID,
+	                                request.action,
+	                                request.subjectAttributeMap,
+	                                resourceAttributeMap)
+	    # send request to worker
+	    output('hello from resource coordinator resource: subjectID=' + str(request.subjectID)+', resourceID='+str(request.resourceID))
+	    send(('WORKER_ASSIGN',request), to=workers)
+
 
 	def receive(msg= ('worker_response',subjectID,resourceID)):
-		output('worker hello')
+		output('worker hello, subjectID='+str(subjectID)+', resource='+str(resourceID))
 
-	def receive(msg= ('client',subjectID, resourceID)):
-		output('client hello')
-		# process and send to authorize of Resource coordinator
-		id = int(resourceID) % size
-		request = Request(subjectID, resourceID, "action")
-		evaluatePolicy()
-		send(('resource_coord',request), to=(coordinators[id]))
+
+    # receive from client
+	def receive(msg= ('CLIENT', subjectID, resourceID, action)):
+		output('client hello subjectID='+str(subjectID)+', resourceID='+str(resourceID))
+		# generate unique request ID and put in queue (lock?)
+		requestID = uuid.uuid4()
+		requestQueue.put(requestID)
+		# create a new map to pass down the request
+		subjectAttributeMap = {}
+		for key, val in tentativeCache.items():
+		    subjectAttributeMap[key] = val
+		for key, val in mainCache.items():
+		    if not subjectAttributeMap.has_key(key):
+		        subjectAttributeMap[key] = val
+		# frame request and forward to Resource coordinator
+		request = Request(requestID,
+		                    subjectID,
+		                    resourceID,
+		                    action,
+		                    subjectAttributeMap,
+		                    None)
+		id = int(resourceID) % len(coordinators)
+		send(('RESOURCE_COORDINATOR',request), to=(coordinators[id]))
+
 
 	def run():
 		output('coordinator starting...')

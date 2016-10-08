@@ -1,9 +1,22 @@
+import cache
+
 class Request(object):
-	def __init__(self, subjectID, resourceID, action):
-		self._subjectID = subjectID
-		self._resourceID = resourceID
-		self._action = action
-		# More
+	def __init__(self, requestID, subjectID, resourceID, action, subjectAttributeMap, resourceAttributeMap):
+	    self.requestID = requestID
+	    self.subjectID = subjectID
+	    self.resourceID = resourceID
+	    self.action = action
+	    self.subjectAttributeMap = subjectAttributeMap
+	    self.resourceAttributeMap = resourceAttributeMap
+
+
+class Response(object):
+	def __init__(self, request, evaluation, toUpdateSubjectMap, toUpdateResourceMap):
+	    self.request = request
+	    self.evaluation = evaluation
+	    self.toUpdateSubjectMap = toUpdateSubjectMap
+	    self.toUpdateResourceMap = toUpdateResourceMap
+
 
 class PolicyRule(object):
 	def __init__(self, subjectCondition, resourceCondition, subjectUpdate, resourceUpdate):
