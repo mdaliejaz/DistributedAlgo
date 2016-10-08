@@ -1,0 +1,16 @@
+class Worker(process):
+
+	def setup(coordinators:list, size):
+		self.coordinators = coordinators
+		self.size = size
+
+	def receive(msg= ('worker_assign',subjectID, resourceID)):
+		# policy evaluation from central source
+		# send to subject coordinator
+		output('worker received')
+		id = int(subjectID) % size
+		send(('worker_response',subjectID, resourceID), to=(coordinators[id]))
+
+	def run():
+		output('worker starting...')
+		await(received(('done',)))

@@ -1,4 +1,6 @@
 dac cache.da
+dac util.da
+dac worker.da
 dac database.da
 dac coordinator.da
 dar master.da

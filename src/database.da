@@ -13,7 +13,9 @@ class Database(process):
 		for subject in root.iter('subject'):
 			for attributes in subject:
 				subjectMap[subject.attrib['id']] = attributes.attrib
+		print(subjectMap)
 		for resource in root.iter('resource'):
 			for attributes in resource:
 				resourceMap[resource.attrib['id']] = attributes.attrib
+		print(resourceMap)
 		await(received(('done',)))
