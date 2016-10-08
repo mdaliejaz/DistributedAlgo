@@ -1,4 +1,4 @@
-python3 cache.py
+dac cache.da
 dac database.da
 dac coordinator.da
 dar master.da
