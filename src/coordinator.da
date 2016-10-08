@@ -3,15 +3,18 @@ import da
 import uuid
 import worker as wor
 from util import Request
+import cache
 
 class Coordinator(process):
-	def setup(coordinators:list, size):
-		self.coordinators = coordinators
-		self.size = size
-		# Change to n workers and decide later
-		self.workers = new(wor.Worker, num= 1)
-		setup(self.workers, (self.coordinators, self.size))
-		start(self.workers)
+	def setup(coordinators):
+	    tentativeCache = cache.Cache()
+	    mainCache = cache.Cache()
+	    self.coordinators = coordinators
+	    self.size = len(coordinators)
+	    # Change to n workers and decide later
+	    self.workers = new(wor.Worker, num= 1)
+	    setup(self.workers, (self.coordinators,))
+	    start(self.workers)
 
 	def evaluatePolicy():
 		evaluationID = getUniqueID()

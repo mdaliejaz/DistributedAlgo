@@ -17,5 +17,3 @@ class Cache(object):
 
     def life(self):
         return 42
-
-cache = Cache()

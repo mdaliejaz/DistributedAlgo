@@ -2,7 +2,7 @@ import sys
 import da
 import coordinator as coord
 import database as db
-import cache
+#import cache
 
 def main():
 	config(channel= 'fifo', clock= 'Lamport')
@@ -11,11 +11,11 @@ def main():
 	dbInstance = new(db.Database, num= 1)
 	listcoord = list(coordinators)
 
-	cacheInstance = cache.Cache()
-	print(cacheInstance.life())
+	#cacheInstance = cache.Cache()
+	#print(cacheInstance.life())
 
 	setup(dbInstance, ("../config/dbPolicy.xml",))
-	setup(coordinators, (listcoord, ncoordinators))
+	setup(coordinators, (listcoord,))
 	start(dbInstance)
 	start(coordinators)
 	da.send(('client',1,2), to=listcoord[1])

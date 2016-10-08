@@ -1,8 +1,7 @@
 class Worker(process):
-
-	def setup(coordinators:list, size):
+	def setup(coordinators):
 		self.coordinators = coordinators
-		self.size = size
+		self.size = len(coordinators)
 
 	def receive(msg= ('worker_assign',subjectID, resourceID)):
 		# policy evaluation from central source
