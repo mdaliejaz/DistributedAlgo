@@ -65,7 +65,7 @@ class Coordinator(process):
             if conflictHappened:
                 # conflict happened, restart
                 output('subject attr conflict happened')
-                self.tentativeSubjectCache = {}
+                self.tentativeSubjectCache[subjectID] = {}
                 requestQueue[subjectID].popleft()
                 id = int(subjectID) % len(coordinators)
                 send(('CLIENT', subjectID,
@@ -117,15 +117,22 @@ class Coordinator(process):
     # send to client, if no conflict happened
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE', (response, conflictHappened))):
         if conflictHappened:
+            id = int(response.dbresponse.request.subjectID) % len(coordinators)
             tentativeSubjectCache[response.dbresponse.request.subjectID] = {}
+            requestQueue[response.dbresponse.request.subjectID].popleft()
+            output('restarting request')
+            send(('CLIENT', response.dbresponse.request.subjectID,
+                  response.dbresponse.request.resourceID,
+                  response.dbresponse.request.action),
+                 to=coordinators[id])
         else:
             if not response.dbresponse.request.subjectID in mainSubjectCache:
                 mainSubjectCache[response.dbresponse.request.subjectID] = {}
             for key, val in tentativeSubjectCache[response.dbresponse.request.subjectID].items():
                 mainSubjectCache[response.dbresponse.request.subjectID][key] = val
-        requestQueue[response.dbresponse.request.subjectID].popleft()
-        output('sending response to client')
-        send(('CLIENT_RESPONSE', 'success'), to=response.dbresponse.request.fromClient)
+            requestQueue[response.dbresponse.request.subjectID].popleft()
+            output('sending response to client')
+            send(('CLIENT_RESPONSE', 'success'), to=response.dbresponse.request.fromClient)
 
     # subject coordinator instance
     # receive from client
