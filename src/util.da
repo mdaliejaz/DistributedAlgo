@@ -12,12 +12,12 @@ class Request(object):
 
 
 class DBResponse(object):
-	def __init__(self, request, evaluation, dbSubjectList, dbResourceList):
+	def __init__(self, request, evaluation, dbSubjectMap, dbResourceMap):
 	    self.request = request
 	    self.evaluation = evaluation
 	    # Maps which contain fields read from DB which are in tentative maps
-	    self.dbSubjectList = dbSubjectList
-	    self.dbResourceList = dbResourceList
+	    self.dbSubjectMap = dbSubjectMap
+	    self.dbResourceMap = dbResourceMap
 
 
 class Response(object):
