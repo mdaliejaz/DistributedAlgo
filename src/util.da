@@ -7,15 +7,17 @@ class Request(object):
 	    # Tentative attribute maps
 	    self.subjectAttributeMap = subjectAttributeMap
 	    self.resourceAttributeMap = resourceAttributeMap
+	    self.requiredSubjAtrribs = set()
+	    self.requiredResourceAtrribs = set()
 
 
 class DBResponse(object):
-	def __init__(self, request, evaluation, dbSubjectMap, dbResourceMap):
+	def __init__(self, request, evaluation, dbSubjectList, dbResourceList):
 	    self.request = request
 	    self.evaluation = evaluation
 	    # Maps which contain fields read from DB which are in tentative maps
-	    self.dbSubjectMap = dbSubjectMap
-	    self.dbResourceMap = dbResourceMap
+	    self.dbSubjectList = dbSubjectList
+	    self.dbResourceList = dbResourceList
 
 
 class Response(object):

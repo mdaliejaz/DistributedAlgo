@@ -14,6 +14,12 @@ class Worker(process):
 	def receive(msg= ('WORKER_ASSIGN', request)):
 		# policy evaluation
 		output('worker received for subject id ' + str(request.subjectID))
+		# For all the rules associated for that action
+		for rule in policyMap[request.action]:
+			for k in rule.subjectCondition.keys():
+				request.requiredSubjAtrribs.add(k)
+			for k in rule.resourceCondition.keys():
+				request.requiredResourceAtrribs.add(k)
 		send(('worker_get_from_db',request), to=dbInstance)
 	
 	def conditionSatisfied(policyValue, dbValue):
@@ -79,7 +85,7 @@ class Worker(process):
 		id = int(dbresponse.request.subjectID) % self.size
 		output("Returning updated maps to SC")
 		send(('WORKER_RESPONSE',response), to=(coordinators[id]))
-			
+
 	def run():
 		output('worker starting...')
 		await(received(('done',)))

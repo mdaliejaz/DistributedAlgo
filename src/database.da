@@ -15,10 +15,8 @@ class Database(process):
 		subjAttribDiff = {}
 		resourceAttribDiff = {}
 		try:
-			subjAttribDb = set(self.subjectMap[str(request.subjectID)].keys())
-			resourceAttribDb = set(self.resourceMap[str(request.resourceID)].keys())
-			subjAttribDiffSet = subjAttribDb - set(request.subjectAttributeMap.keys())
-			resourceAttribDiffSet = resourceAttribDb - set(request.resourceAttributeMap.keys())
+			subjAttribDiffSet = request.requiredSubjAtrribs - set(request.subjectAttributeMap.keys())
+			resourceAttribDiffSet = request.requiredResourceAtrribs - set(request.resourceAttributeMap.keys())
 			
 			for subj in subjAttribDiffSet:
 				subjAttribDiff[subj] = self.subjectMap[str(request.subjectID)][subj]
@@ -27,7 +25,7 @@ class Database(process):
 		except:
 			evaluation = False
 
-		response = DBResponse(request, evaluation, subjAttribDiff, resourceAttribDiff)
+		response = DBResponse(request, evaluation, list(subjAttribDiff.keys()), list(resourceAttribDiff.keys()))
 		send(('db_work_done',response), to= p)
 		
 		
