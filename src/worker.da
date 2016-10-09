@@ -5,7 +5,7 @@ from util import PolicyRule
 from util import Response
 
 class Worker(process):
-	def setup(coordinators:list, dbInstance, config):
+	def setup(coordinators, dbInstance, config):
 		self.coordinators = coordinators
 		self.policyMap = {}
 		self.size = len(coordinators)
@@ -14,18 +14,44 @@ class Worker(process):
 	def receive(msg= ('WORKER_ASSIGN', request)):
 		# policy evaluation
 		output('worker received for subject id ' + str(request.subjectID))
-		print(request.subjectAttributeMap)
 		send(('worker_get_from_db',request), to=dbInstance)
 	
+	def conditionSatisfied(policyValue, dbValue):
+		if ((len(policyValue) > 0 and len(dbValue) > 0) and
+			(policyValue[0]==">" or policyValue[0]=="<")):
+			try:
+				policyNum = int(policyValue[1:])
+				dbNum = int(dbValue)
+				if (policyValue[0]=="<"):
+					return policyNum > dbNum
+				else:
+					return policyNum < dbNum
+			except:
+				return False
+		else:
+			return policyValue == dbValue
+
 	def validateRule(conditions, attribMap):
 		for k in conditions.keys():
-			# Check value condition function
-			pass
+			if not conditionSatisfied(conditions[k], attribMap[k]):
+				return False
 		return True
-		
+
+	def getUpdatedMaps(ruleUpdate,attribMap):
+		updateMap = {}
+		if (ruleUpdate == None):
+			return updateMap
+		for k,v in ruleUpdate.items():
+			if (v == "++"):
+				updateMap[k] = str(int(attribMap[k])+1)
+			elif (v=="--"):
+				updateMap[k] = str(int(attribMap[k])-1)
+			else:
+				updateMap[k] = v
+		return updateMap
+					
 	def receive(msg= ('db_work_done',dbresponse)):
 		output('got dbresponse in worker.da')
-		print(dbresponse.dbSubjectMap, dbresponse.request.subjectAttributeMap)
 
 		subjAttribReqd = dict(dbresponse.dbSubjectMap.items() |
 			dbresponse.request.subjectAttributeMap.items())
@@ -35,15 +61,23 @@ class Worker(process):
 		ruleMatch = False
 		for rule in policyMap[dbresponse.request.action]:
 			if (validateRule(rule.subjectCondition,subjAttribReqd) and
-				validateRule(rule.subjectCondition,subjAttribReqd)):
+				validateRule(rule.resourceCondition,resourceAttribReqd)):
 				ruleMatch = True
 				break
+
+		toUpdateSubjectMap = {}
+		toUpdateResourceMap = {}
 		# If no rule has matched
 		if ruleMatch == False:
 			dbresponse.evaluation = False
-		
-		response = Response(dbresponse, None, None)
+		else:
+			# These are the attributes updated
+			toUpdateSubjectMap = getUpdatedMaps(rule.subjectUpdate,subjAttribReqd)
+			toUpdateResourceMap = getUpdatedMaps(rule.resourceUpdate,resourceAttribReqd)
+					
+		response = Response(dbresponse, toUpdateSubjectMap, toUpdateResourceMap)
 		id = int(dbresponse.request.subjectID) % self.size
+		output("Returning updated maps to SC")
 		send(('WORKER_RESPONSE',response), to=(coordinators[id]))
 			
 	def run():

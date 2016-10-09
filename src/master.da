@@ -17,5 +17,6 @@ def main():
 	setup(coordinators, (listcoord, dbInstance, config))
 	start(dbInstance)
 	start(coordinators)
-	da.send(('CLIENT',11101,44402,'read'), to=listcoord[1])
+	da.send(('CLIENT',11101,44401,'read'), to=listcoord[1])
+	da.send(('CLIENT',11102,44402,'view'), to=listcoord[2])
 	

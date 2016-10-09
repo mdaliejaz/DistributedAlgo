@@ -4,6 +4,7 @@ class Request(object):
 	    self.subjectID = subjectID
 	    self.resourceID = resourceID
 	    self.action = action
+	    # Tentative attribute maps
 	    self.subjectAttributeMap = subjectAttributeMap
 	    self.resourceAttributeMap = resourceAttributeMap
 
@@ -12,6 +13,7 @@ class DBResponse(object):
 	def __init__(self, request, evaluation, dbSubjectMap, dbResourceMap):
 	    self.request = request
 	    self.evaluation = evaluation
+	    # Maps which contain fields read from DB which are in tentative maps
 	    self.dbSubjectMap = dbSubjectMap
 	    self.dbResourceMap = dbResourceMap
 
@@ -20,6 +22,7 @@ class Response(object):
 	def __init__(self, dbresponse, toUpdateSubjectMap, toUpdateResourceMap):
 	    self.dbresponse = dbresponse
 		# These maps are different from the ones in DB response
+		# These maps store the updated attributes only
 	    self.toUpdateSubjectMap = toUpdateSubjectMap
 	    self.toUpdateResourceMap = toUpdateResourceMap
 	    

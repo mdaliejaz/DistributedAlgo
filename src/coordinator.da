@@ -6,13 +6,13 @@ from util import Request
 import queue
 
 class Coordinator(process):
-	def setup(coordinators:list, dbInstance, config):
+	def setup(coordinators, dbInstance, config):
 	    self.tentativeCache = {}
 	    self.mainCache = {}
 	    self.requestQueue = queue.Queue()
 	    self.coordinators = coordinators
 	    # Change to n workers and decide later
-	    self.workers = new(worker.Worker, num= 1)
+	    self.workers = new(worker.Worker, num= int(config.get("setup", "nworkerspercoord")))
 	    setup(self.workers, (self.coordinators, dbInstance, config,))
 	    start(self.workers)
 
@@ -42,12 +42,12 @@ class Coordinator(process):
 
     # subject coordinator instance
     # receive from worker
-    # send to resource coordinator
+    # send to resource coordinator (for resource conflicts)
 	def receive(msg= ('WORKER_RESPONSE', response)):
 		output('WORKER_RESPONSE, subjectID='+
-			str(response.dbresponse.request.subjectID)+
+			str(response.dbresponse.request.subjectID) +
 			', resource='+str(response.dbresponse.request.resourceID))
-		# check for conflict
+		# check for conflict TODO: ALI (Read util.da carefully)
 
 
     # subject coordinator instance

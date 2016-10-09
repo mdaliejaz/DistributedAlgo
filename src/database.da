@@ -4,7 +4,7 @@ import xml.etree.ElementTree as ET
 from util import DBResponse
 
 class Database(process):
-	def setup(file:str):
+	def setup(file):
 		self.root = ET.parse(file).getroot()
 		self.subjectMap = {}
 		self.resourceMap = {}
