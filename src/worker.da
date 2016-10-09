@@ -8,11 +8,13 @@ class Worker(process):
 	def setup(coordinators:list, dbInstance, config):
 		self.coordinators = coordinators
 		self.policyMap = {}
+		self.size = len(coordinators)
 		readPolicy(config.get("setup", "policyFile"))
 
 	def receive(msg= ('WORKER_ASSIGN', request)):
 		# policy evaluation
-		output('worker received for subject id ' + request.subjectID)
+		output('worker received for subject id ' + str(request.subjectID))
+		print(request.subjectAttributeMap)
 		send(('worker_get_from_db',request), to=dbInstance)
 	
 	def validateRule(conditions, attribMap):
@@ -22,23 +24,26 @@ class Worker(process):
 		return True
 		
 	def receive(msg= ('db_work_done',dbresponse)):
-		subjAttribReqd = {**dbresponse.dbSubjectMap,
-			**dbresponse.request.subjectAttributeMap} # Works in python 3.5 and above
-		resourceAttribReqd = {**dbresponse.dbResourceMap,
-			**dbresponse.request.resourceAttributeMap} # Works in python 3.5 and above
-		
+		output('got dbresponse in worker.da')
+		print(dbresponse.dbSubjectMap, dbresponse.request.subjectAttributeMap)
+
+		subjAttribReqd = dict(dbresponse.dbSubjectMap.items() |
+			dbresponse.request.subjectAttributeMap.items())
+		resourceAttribReqd = dict(dbresponse.dbResourceMap.items() |
+			dbresponse.request.resourceAttributeMap.items())
+			
 		ruleMatch = False
 		for rule in policyMap[dbresponse.request.action]:
-			if (validateRule(rule.subjectConditions,subjAttribReqd) and
-				validateRule(rule.subjectConditions,subjAttribReqd)):
+			if (validateRule(rule.subjectCondition,subjAttribReqd) and
+				validateRule(rule.subjectCondition,subjAttribReqd)):
 				ruleMatch = True
 				break
 		# If no rule has matched
 		if ruleMatch == False:
 			dbresponse.evaluation = False
 		
-		response = Response(dbresponse, None, None)	
-		id = int(dbresponse.request.subjectID) % size
+		response = Response(dbresponse, None, None)
+		id = int(dbresponse.request.subjectID) % self.size
 		send(('WORKER_RESPONSE',response), to=(coordinators[id]))
 			
 	def run():

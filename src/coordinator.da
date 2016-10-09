@@ -3,7 +3,6 @@ import da
 import uuid
 import worker
 from util import Request
-import cache
 import queue
 
 class Coordinator(process):
@@ -38,14 +37,16 @@ class Coordinator(process):
 	                                resourceAttributeMap)
 	    # send request to worker
 	    output('hello from resource coordinator resource: subjectID=' + str(request.subjectID)+', resourceID='+str(request.resourceID))
-	    send(('WORKER_ASSIGN',request), to=workers)
+	    send(('WORKER_ASSIGN',updatedRequest), to=workers)
 
 
     # subject coordinator instance
     # receive from worker
     # send to resource coordinator
 	def receive(msg= ('WORKER_RESPONSE', response)):
-		output('worker hello, subjectID='+str(response.request.subjectID)+', resource='+str(response.request.resourceID))
+		output('WORKER_RESPONSE, subjectID='+
+			str(response.dbresponse.request.subjectID)+
+			', resource='+str(response.dbresponse.request.resourceID))
 		# check for conflict
 
 
@@ -57,6 +58,7 @@ class Coordinator(process):
 		# generate unique request ID and put in queue (lock?)
 		requestID = uuid.uuid4()
 		requestQueue.put(requestID)
+		
 		# create a new map to pass down the request
 		subjectAttributeMap = {}
 		for key, val in tentativeCache.items():
@@ -64,6 +66,7 @@ class Coordinator(process):
 		for key, val in mainCache.items():
 		    if not subjectAttributeMap.has_key(key):
 		        subjectAttributeMap[key] = val
+		        
 		# frame request and forward to Resource coordinator
 		request = Request(requestID,
 		                    subjectID,
