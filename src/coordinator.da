@@ -24,18 +24,11 @@ class Coordinator(process):
     # receive from subject coordinator
     # send to worker
     def receive(msg=('RESOURCE_COORDINATOR', request)):
-        # create resource attribute map
+        # update request with resourceAttributeMap
         if request.requestID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
             request.resourceAttributeMap = {}
-        # update request with resourceAttributeMap
-        # updatedRequest = Request(request.requestID,
-        #                          request.subjectID,
-        #                          request.resourceID,
-        #                          request.action,
-        #                          request.subjectAttributeMap,
-        #                          resourceAttributeMap)
         # send request to worker
         output('hello from resource coordinator resource: subjectID=' + str(request.subjectID) + ', resourceID=' + str(
             request.resourceID))
@@ -72,7 +65,7 @@ class Coordinator(process):
             if conflictHappened:
                 # conflict happened, restart
                 output('subject attr conflict happened')
-                tentativeSubjectCache = {}
+                self.tentativeSubjectCache = {}
                 requestQueue[subjectID].popleft()
                 id = int(subjectID) % len(coordinators)
                 send(('CLIENT', subjectID,
