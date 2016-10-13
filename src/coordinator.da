@@ -51,28 +51,30 @@ class Coordinator(process):
         # wait for first element to be processed if this is not the first
         while requestQueue[subjectID][0] != response.dbresponse.request.requestID:
             output('infinite wait')
-            pass
+            pass # Put all responses in another queue dont queue r1
         # check for conflict
         conflictHappened = False
         for key, _ in response.dbresponse.dbSubjectMap.items():
             if key in tentativeSubjectCache or key in mainSubjectCache:
                 conflictHappened = True
 
-        for key, value in response.dbresponse.request.subjectAttributeMap.items():
+        for key, value in response.dbresponse.request.subjectAttributeMap.items(): # Atanu needs to send new map
             if key in mainSubjectCache:
                 if value[1] != mainSubjectCache[key][1]:
                     conflictHappened = True
-            if conflictHappened:
-                # conflict happened, restart
-                output('subject attr conflict happened')
-                self.tentativeSubjectCache[subjectID] = {}
-                requestQueue[subjectID].popleft()
-                id = int(subjectID) % len(coordinators)
-                send(('CLIENT', subjectID,
-                      response.dbresponse.request.resourceID,
-                      response.dbresponse.request.action),
-                     to=coordinators[id])
-                return
+            
+        if conflictHappened:
+            # conflict happened, restart
+            output('subject attr conflict happened')
+            self.tentativeSubjectCache[subjectID] = {} # Ok sync with SP and check
+            requestQueue[subjectID].popleft()
+            id = int(subjectID) % len(coordinators)
+            send(('CLIENT', subjectID,
+                  response.dbresponse.request.resourceID,
+                  response.dbresponse.request.action),
+                 to=coordinators[id])
+            return
+        
         # no conflicts
         # tentatively update subject attributes
         if not subjectID in tentativeSubjectCache:
@@ -100,9 +102,11 @@ class Coordinator(process):
             if key in resourceCache:
                 if value[1] != resourceCache[key][1]:
                     conflictHappened = True
-            if conflictHappened:
-                # conflict happened, restart
-                output('resource attr conflict happened')
+                    
+        if conflictHappened:
+            # conflict happened, restart
+            output('resource attr conflict happened')
+            
         if not conflictHappened:
             if not response.dbresponse.request.resourceID in resourceCache:
                 resourceCache[response.dbresponse.request.resourceID] = {}
@@ -132,7 +136,7 @@ class Coordinator(process):
                 mainSubjectCache[response.dbresponse.request.subjectID][key] = val
             requestQueue[response.dbresponse.request.subjectID].popleft()
             output('sending response to client')
-            send(('CLIENT_RESPONSE', 'success'), to=response.dbresponse.request.fromClient)
+            send(('RESULT_CLIENT', 'success'), to=response.dbresponse.request.fromClient)
 
     # subject coordinator instance
     # receive from client
@@ -144,7 +148,7 @@ class Coordinator(process):
         if not subjectID in requestQueue:
             requestQueue[subjectID] = deque()
         requestQueue[subjectID].append(requestID)
-
+        print("QUEUE", requestQueue[subjectID])
         # create a new map to pass down the request
         subjectAttributeMap = {}
         if subjectID in tentativeSubjectCache:

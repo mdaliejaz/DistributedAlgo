@@ -3,9 +3,13 @@ import da
 import xml.etree.ElementTree as ET
 from util import PolicyRule
 from util import Response
+import logging
+import logging.config
+import logging.handlers
 
 class Worker(process):
 	def setup(coordinators, dbInstance, config):
+		# self.logger = logging.getLogger('sLogger')
 		self.coordinators = coordinators
 		self.policyMap = {}
 		self.size = len(coordinators)
@@ -14,6 +18,7 @@ class Worker(process):
 	def receive(msg= ('WORKER_ASSIGN', request)):
 		# policy evaluation
 		output('worker received for subject id ' + str(request.subjectID))
+		# logger.info('worker received for subject id ' + str(request.subjectID))
 		# For all the rules associated for that action
 		for rule in policyMap[request.action]:
 			for k in rule.subjectCondition.keys():

@@ -1,1 +1,0 @@
-logs/       log files from running all testcases described in testing.txt

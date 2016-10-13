@@ -4,6 +4,9 @@ import coordinator as coord
 import database as db
 import configparser
 import client as cl
+import logging
+import logging.config
+import logging.handlers
 
 def main():
 	config = configparser.ConfigParser();
@@ -13,6 +16,11 @@ def main():
 	nclients = int(config.get("setup", "nclients"))
 	dInitFile = str(config.get("setup", "dInitFile"))
 	
+	# logging.config.fileConfig(sys.argv[1],
+	#	defaults={'logfilename': str(config.get("setup", "logFile"))})
+	# logger = logging.getLogger('sLogger')
+	# logger.info("started")
+
 	coordinators = new(coord.Coordinator, num= ncoordinators)
 	dbInstance = new(db.Database, num= 1)
 	clients = new(cl.Client, num= nclients)
