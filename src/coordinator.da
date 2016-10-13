@@ -48,10 +48,9 @@ class Coordinator(process):
             output('evaluation is False')
             send(('RESULT_CLIENT', 'false'), to=response.dbresponse.request.fromClient)
             return
-        # wait for first element to be processed if this is not the first
-        while requestQueue[subjectID][0] != response.dbresponse.request.requestID:
-            output('infinite wait')
-            pass # Put all responses in another queue dont queue r1
+
+        await(requestQueue[subjectID][0] == response.dbresponse.request.requestID)
+
         # check for conflict
         conflictHappened = False
         for key, _ in response.dbresponse.dbSubjectMap.items():
@@ -113,6 +112,7 @@ class Coordinator(process):
             timestamp = int(time.time())
             for key, value in response.toUpdateResourceMap.items():
                 resourceCache[response.dbresponse.request.resourceID][key] = (value, timestamp)
+
         id = int(response.dbresponse.request.subjectID) % len(coordinators)
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE', (response, conflictHappened)), to=coordinators[id])
 

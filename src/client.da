@@ -22,7 +22,7 @@ class Client(process):
         
     # TODO: Ali :: Corresponding send must come from SC
     def receive(msg= ('RESULT_CLIENT', result)):
-        if result:
+        if result == 'success':
             output("Allow access to client"+str(num))
         else:
             output("Deny access to client"+str(num))
