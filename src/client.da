@@ -20,7 +20,6 @@ class Client(process):
         coordID = (elem[0]) % self.size
         send(('CLIENT', elem[0], elem[1], elem[2]), to= coordinators[coordID])
         
-    # TODO: Ali :: Corresponding send must come from SC
     def receive(msg= ('RESULT_CLIENT', result)):
         if result == 'success':
             output("Allow access to client"+str(num))

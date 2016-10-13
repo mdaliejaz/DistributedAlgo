@@ -55,7 +55,7 @@ class Worker(process):
 		for k,v in ruleUpdate.items():
 			if (v == "++"):
 				updateMap[k] = str(int(attribMap[k])+1)
-			elif (v=="--"):
+			elif (v == "--"):
 				updateMap[k] = str(int(attribMap[k])-1)
 			else:
 				updateMap[k] = v

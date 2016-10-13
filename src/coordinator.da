@@ -30,8 +30,9 @@ class Coordinator(process):
         else:
             request.resourceAttributeMap = {}
         # send request to worker
-        output('hello from resource coordinator resource: subjectID=' + str(request.subjectID) + ', resourceID=' + str(
-            request.resourceID))
+        output('hello from resource coordinator resource: subjectID='
+               + str(request.subjectID) + ', resourceID=' + str(
+                   request.resourceID))
         send(('WORKER_ASSIGN', request), to=workers)
 
     # subject coordinator instance, checks subject attribute conflicts
@@ -65,7 +66,7 @@ class Coordinator(process):
         if conflictHappened:
             # conflict happened, restart
             output('subject attr conflict happened')
-            self.tentativeSubjectCache[subjectID] = {} # Ok sync with SP and check
+            self.tentativeSubjectCache[subjectID] = {} # Ali sync with SP and check
             requestQueue[subjectID].popleft()
             id = int(subjectID) % len(coordinators)
             send(('CLIENT', subjectID,
@@ -114,12 +115,14 @@ class Coordinator(process):
                 resourceCache[response.dbresponse.request.resourceID][key] = (value, timestamp)
 
         id = int(response.dbresponse.request.subjectID) % len(coordinators)
-        send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE', (response, conflictHappened)), to=coordinators[id])
+        send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
+              (response, conflictHappened)), to=coordinators[id])
 
     # subject coordinator instance
     # receive from resource coordinator
     # send to client, if no conflict happened
-    def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE', (response, conflictHappened))):
+    def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
+                     (response, conflictHappened))):
         if conflictHappened:
             id = int(response.dbresponse.request.subjectID) % len(coordinators)
             tentativeSubjectCache[response.dbresponse.request.subjectID] = {}
