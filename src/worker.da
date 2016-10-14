@@ -74,7 +74,7 @@ class Worker(process):
 		output('got dbresponse in worker.da')
 		
 		subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap, dbresponse.request.subjectAttributeMap)
-		resourceAttribReqd = mergeMap(dbresponse.readDbResourceMap, dbresponse.request.resourceAttributeMap)
+		resourceAttribReqd = mergeMaps(dbresponse.readDbResourceMap, dbresponse.request.resourceAttributeMap)
 			
 		ruleMatch = False
 		readSubjAttrib = set()
