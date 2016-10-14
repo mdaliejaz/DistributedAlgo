@@ -1,5 +1,6 @@
 class Request(object):
-    def __init__(self, requestID, client, subjectID, resourceID, action, subjectAttributeMap, resourceAttributeMap):
+    def __init__(self, requestID, client, subjectID, resourceID, action,
+                 subjectAttributeMap, resourceAttributeMap):
         self.requestID = requestID
         self.fromClient = client
         self.subjectID = subjectID
@@ -13,7 +14,8 @@ class Request(object):
 
 
 class DBResponse(object):
-    def __init__(self, request, evaluation, readDbSubjectMap, readDbResourceMap):
+    def __init__(self, request, evaluation, readDbSubjectMap,
+                 readDbResourceMap):
         self.request = request
         self.evaluation = evaluation
         # Maps which contain fields read from DB which are not in tentative maps and used for policy evaluation
@@ -22,7 +24,8 @@ class DBResponse(object):
 
 
 class Response(object):
-    def __init__(self, dbresponse, toUpdateSubjectMap, toUpdateResourceMap, readSubjectAttributeMap, readResourceAttributeMap):
+    def __init__(self, dbresponse, toUpdateSubjectMap, toUpdateResourceMap,
+                 readSubjectAttributeMap, readResourceAttributeMap):
         self.dbresponse = dbresponse
         # These maps are different from the ones in DB response
         # These maps store the updated attributes only
@@ -33,7 +36,8 @@ class Response(object):
 
 
 class PolicyRule(object):
-    def __init__(self, subjectCondition, resourceCondition, subjectUpdate, resourceUpdate):
+    def __init__(self, subjectCondition, resourceCondition, subjectUpdate,
+                 resourceUpdate):
         self.subjectCondition = subjectCondition
         self.resourceCondition = resourceCondition
         self.subjectUpdate = subjectUpdate

@@ -3,40 +3,46 @@ import da
 import xml.etree.ElementTree as ET
 from util import DBResponse
 
-class Database(process):
-	def setup(file):
-		self.root = ET.parse(file).getroot()
-		self.subjectMap = {}
-		self.resourceMap = {}
-	
-	def receive(msg= ('worker_get_from_db',request), from_= p):
-		output("in db: received request from worker for subject id " + str(request.subjectID))
-		evaluation = True
-		subjAttribDiff = {}
-		resourceAttribDiff = {}
-		try:
-			subjAttribDiffSet = request.requiredSubjAtrribs - set(request.subjectAttributeMap.keys())
-			resourceAttribDiffSet = request.requiredResourceAtrribs - set(request.resourceAttributeMap.keys())
-			
-			for subj in subjAttribDiffSet:
-				subjAttribDiff[subj] = self.subjectMap[str(request.subjectID)][subj]
-			for resource in resourceAttribDiffSet:
-				resourceAttribDiff[resource] = self.resourceMap[str(request.resourceID)][resource]
-		except:
-			evaluation = False
 
-		response = DBResponse(request, evaluation, subjAttribDiff, resourceAttribDiff)
-		send(('db_work_done',response), to= p)
-		
-		
-	def run():
-		output('database starting...')			
-		for subject in root.iter('subject'):
-			for attributes in subject:
-				subjectMap[subject.attrib['id']] = attributes.attrib
-		print(subjectMap)
-		for resource in root.iter('resource'):
-			for attributes in resource:
-				resourceMap[resource.attrib['id']] = attributes.attrib
-		print(resourceMap)
-		await(received(('done',)))
+class Database(process):
+    def setup(file):
+        self.root = ET.parse(file).getroot()
+        self.subjectMap = {}
+        self.resourceMap = {}
+
+    def receive(msg=('worker_get_from_db', request), from_=p):
+        output("in db: received request from worker for subject id " + str(
+            request.subjectID))
+        evaluation = True
+        subjAttribDiff = {}
+        resourceAttribDiff = {}
+        try:
+            subjAttribDiffSet = request.requiredSubjAtrribs - set(
+                request.subjectAttributeMap.keys())
+            resourceAttribDiffSet = request.requiredResourceAtrribs - set(
+                request.resourceAttributeMap.keys())
+
+            for subj in subjAttribDiffSet:
+                subjAttribDiff[subj] = self.subjectMap[str(request.subjectID)][
+                    subj]
+            for resource in resourceAttribDiffSet:
+                resourceAttribDiff[resource] = \
+                self.resourceMap[str(request.resourceID)][resource]
+        except:
+            evaluation = False
+
+        response = DBResponse(request, evaluation, subjAttribDiff,
+                              resourceAttribDiff)
+        send(('db_work_done', response), to=p)
+
+    def run():
+        output('database starting...')
+        for subject in root.iter('subject'):
+            for attributes in subject:
+                subjectMap[subject.attrib['id']] = attributes.attrib
+        print(subjectMap)
+        for resource in root.iter('resource'):
+            for attributes in resource:
+                resourceMap[resource.attrib['id']] = attributes.attrib
+        print(resourceMap)
+        await(received(('done',)))
