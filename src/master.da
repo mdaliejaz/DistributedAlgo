@@ -1,13 +1,12 @@
 import sys
 import da
-import coordinator as coord
-import database as db
 import configparser
-import client as cl
 import logging
 import logging.config
 import logging.handlers
-
+import coordinator as coord
+import database as db
+import client as cl
 
 def main():
     config = configparser.ConfigParser();
@@ -15,9 +14,10 @@ def main():
 
     ncoordinators = int(config.get("setup", "ncoordinators"))
     nclients = int(config.get("setup", "nclients"))
-    dInitFile = str(config.get("setup", "dInitFile"))
-
-    # logging.config.fileConfig(sys.argv[1],
+    dbInitFile = str(config.get("setup", "dbInitFile"))
+    logConfFile = str(config.get("setup", "logConfFile"))
+	
+    # logging.config.fileConfig(str(logConfFile),
     #	defaults={'logfilename': str(config.get("setup", "logFile"))})
     # logger = logging.getLogger('sLogger')
     # logger.info("started")
@@ -27,7 +27,7 @@ def main():
     clients = new(cl.Client, num=nclients)
 
     listcoord = list(coordinators)
-    setup(dbInstance, (dInitFile,))
+    setup(dbInstance, (dbInitFile,))
     setup(coordinators, (listcoord, dbInstance, config))
     num = 1
     for client in clients:
@@ -37,6 +37,3 @@ def main():
     start(dbInstance)
     start(coordinators)
     start(clients)
-
-# da.send(('CLIENT',11101,44401,'read'), to=listcoord[1])
-# da.send(('CLIENT',11102,44402,'view'), to=listcoord[2])

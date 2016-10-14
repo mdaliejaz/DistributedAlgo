@@ -15,9 +15,11 @@ class Coordinator(process):
         self.requestQueue = {}
         self.responseQueue = {}
         self.coordinators = coordinators
-        # Change to n workers and decide later
+        
         self.workers = new(worker.Worker,
                            num=int(config.get("setup", "nworkerspercoord")))
+        self.workerList = list(self.workers)
+        self.workerSequence = -1
         setup(self.workers, (self.coordinators, dbInstance, config,))
         start(self.workers)
 
@@ -33,7 +35,8 @@ class Coordinator(process):
         # send request to worker
         output('resource coordinator received: subjectID = ',
                request.subjectID, ', resourceID = ', request.resourceID)
-        send(('WORKER_ASSIGN', request), to=workers)
+        workerSequence = (workerSequence + 1) % len(workerList)
+        send(('WORKER_ASSIGN', request), to= workerList[workerSequence])
 
     # subject coordinator instance, checks subject attribute conflicts
     # receive from worker
