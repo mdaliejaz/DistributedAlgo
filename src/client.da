@@ -19,7 +19,7 @@ class Client(process):
     def sendToSC():
         elem = requestQueue.get()
         coordID = (elem[0]) % self.size
-        send(('CLIENT', elem[0], elem[1], elem[2]), to=coordinators[coordID])
+        send(('CLIENT', elem[0], elem[1], elem[2], None), to=coordinators[coordID])
 
     def receive(msg=('RESULT_CLIENT', result)):
         if result == 'success':
@@ -30,5 +30,6 @@ class Client(process):
         sendToSC()
 
     def run():
+        output('client starting...')
         sendToSC()
         await(received(('done',)))
