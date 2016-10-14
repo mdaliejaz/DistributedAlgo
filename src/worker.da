@@ -1,12 +1,11 @@
 import sys
 import da
 import xml.etree.ElementTree as ET
-from util import PolicyRule
-from util import Response
 import logging
 import logging.config
 import logging.handlers
-
+from util import PolicyRule
+from util import Response
 
 class Worker(process):
     def setup(coordinators, dbInstance, config):
@@ -73,7 +72,6 @@ class Worker(process):
 
     def receive(msg=('db_work_done', dbresponse)):
         output('got dbresponse in worker.da')
-
         subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap,
                                    dbresponse.request.subjectAttributeMap)
         resourceAttribReqd = mergeMaps(dbresponse.readDbResourceMap,
@@ -126,7 +124,6 @@ class Worker(process):
         response = Response(dbresponse, toUpdateSubjectMap, toUpdateResourceMap,
                             readSubjMap, readresourceMap)
         id = int(dbresponse.request.subjectID) % self.size
-        output("Returning updated maps to SC")
         send(('WORKER_RESPONSE', response), to=(coordinators[id]))
 
     def run():
