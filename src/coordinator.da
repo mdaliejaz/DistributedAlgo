@@ -16,7 +16,8 @@ class Coordinator(process):
         self.requestQueue = {}
         self.coordinators = coordinators
         # Change to n workers and decide later
-        self.workers = new(worker.Worker, num=int(config.get("setup", "nworkerspercoord")))
+        self.workers = new(worker.Worker,
+                           num=int(config.get("setup", "nworkerspercoord")))
         setup(self.workers, (self.coordinators, dbInstance, config,))
         start(self.workers)
 
@@ -32,25 +33,27 @@ class Coordinator(process):
         # send request to worker
         output('hello from resource coordinator resource: subjectID='
                + str(request.subjectID) + ', resourceID=' + str(
-                   request.resourceID))
+            request.resourceID))
         send(('WORKER_ASSIGN', request), to=workers)
 
     # subject coordinator instance, checks subject attribute conflicts
     # receive from worker
     # send to resource coordinator (for resource conflicts)
     def receive(msg=('WORKER_RESPONSE', response)):
-        output('WORKER_RESPONSE, subjectID=' +
-               str(response.dbresponse.request.subjectID) +
-               ', resource=' + str(response.dbresponse.request.resourceID))
+        output('WORKER_RESPONSE, subjectID=' + str(
+            response.dbresponse.request.subjectID) + ', resource=' + str(
+            response.dbresponse.request.resourceID))
         subjectID = response.dbresponse.request.subjectID
         # send result if evaluation is false
         if not response.dbresponse.evaluation:
             requestQueue[subjectID].popleft()
             output('evaluation is False')
-            send(('RESULT_CLIENT', 'false'), to=response.dbresponse.request.fromClient)
+            send(('RESULT_CLIENT', 'false'),
+                 to=response.dbresponse.request.fromClient)
             return
 
-        await(requestQueue[subjectID][0] == response.dbresponse.request.requestID)
+        await(
+            requestQueue[subjectID][0] == response.dbresponse.request.requestID)
 
         # check for conflict
         conflictHappened = False
@@ -58,15 +61,15 @@ class Coordinator(process):
             if key in tentativeSubjectCache or key in mainSubjectCache:
                 conflictHappened = True
 
-        for key, value in response.dbresponse.request.subjectAttributeMap.items(): # Atanu needs to send new map
+        for key, value in response.dbresponse.request.subjectAttributeMap.items():
             if key in mainSubjectCache:
                 if value[1] != mainSubjectCache[key][1]:
                     conflictHappened = True
-            
+
         if conflictHappened:
             # conflict happened, restart
             output('subject attr conflict happened')
-            self.tentativeSubjectCache[subjectID] = {} # Ali sync with SP and check
+            self.tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
             id = int(subjectID) % len(coordinators)
             send(('CLIENT', subjectID,
@@ -74,7 +77,7 @@ class Coordinator(process):
                   response.dbresponse.request.action),
                  to=coordinators[id])
             return
-        
+
         # no conflicts
         # tentatively update subject attributes
         if not subjectID in tentativeSubjectCache:
@@ -82,10 +85,12 @@ class Coordinator(process):
         timestamp = int(time.time())
         for key, value in response.toUpdateSubjectMap.items():
             tentativeSubjectCache[subjectID][key] = (value, timestamp)
-        output('sending to coordinator ' + str(response.dbresponse.request.resourceID))
+        output('sending to coordinator ' + str(
+            response.dbresponse.request.resourceID))
         # send to resource coordinator to check for resource attribute conflict
         id = int(response.dbresponse.request.resourceID) % len(coordinators)
-        send(('RESOURCE_COORDINATOR_CONFLICT_CHECK', response), to=coordinators[id])
+        send(('RESOURCE_COORDINATOR_CONFLICT_CHECK', response),
+             to=coordinators[id])
 
     # resource coordinator instance, checks resource attribute conflicts
     # receive from subject coordinator
@@ -102,17 +107,18 @@ class Coordinator(process):
             if key in resourceCache:
                 if value[1] != resourceCache[key][1]:
                     conflictHappened = True
-                    
+
         if conflictHappened:
             # conflict happened, restart
             output('resource attr conflict happened')
-            
+
         if not conflictHappened:
             if not response.dbresponse.request.resourceID in resourceCache:
                 resourceCache[response.dbresponse.request.resourceID] = {}
             timestamp = int(time.time())
             for key, value in response.toUpdateResourceMap.items():
-                resourceCache[response.dbresponse.request.resourceID][key] = (value, timestamp)
+                resourceCache[response.dbresponse.request.resourceID][key] = (
+                    value, timestamp)
 
         id = int(response.dbresponse.request.subjectID) % len(coordinators)
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
@@ -130,22 +136,27 @@ class Coordinator(process):
             output('restarting request')
             send(('CLIENT', response.dbresponse.request.subjectID,
                   response.dbresponse.request.resourceID,
-                  response.dbresponse.request.action),
-                 to=coordinators[id])
+                  response.dbresponse.request.action), to=coordinators[id])
         else:
             if not response.dbresponse.request.subjectID in mainSubjectCache:
                 mainSubjectCache[response.dbresponse.request.subjectID] = {}
-            for key, val in tentativeSubjectCache[response.dbresponse.request.subjectID].items():
-                mainSubjectCache[response.dbresponse.request.subjectID][key] = val
+            for key, val in tentativeSubjectCache[
+                response.dbresponse.request.subjectID].items():
+                mainSubjectCache[response.dbresponse.request.subjectID][
+                    key] = val
             requestQueue[response.dbresponse.request.subjectID].popleft()
             output('sending response to client')
-            send(('RESULT_CLIENT', 'success'), to=response.dbresponse.request.fromClient)
+            send(('RESULT_CLIENT', 'success'),
+                 to=response.dbresponse.request.fromClient)
 
     # subject coordinator instance
     # receive from client
     # send to resource coordinator
-    def receive(msg=('CLIENT', subjectID, resourceID, action), from_=clientProcess):
-        output('client hello subjectID=' + str(subjectID) + ', resourceID=' + str(resourceID))
+    def receive(msg=('CLIENT', subjectID, resourceID, action),
+                from_=clientProcess):
+        output(
+            'client hello subjectID=' + str(subjectID) + ', resourceID=' + str(
+                resourceID))
         # generate unique request ID and put in queue (lock?)
         requestID = uuid.uuid4()
         if not subjectID in requestQueue:
@@ -163,13 +174,8 @@ class Coordinator(process):
                     subjectAttributeMap[key] = val
 
         # frame request and forward to Resource coordinator
-        request = Request(requestID,
-                          clientProcess,
-                          subjectID,
-                          resourceID,
-                          action,
-                          subjectAttributeMap,
-                          None)
+        request = Request(requestID, clientProcess, subjectID, resourceID,
+                          action, subjectAttributeMap, None)
         id = int(resourceID) % len(coordinators)
         send(('RESOURCE_COORDINATOR', request), to=(coordinators[id]))
 
