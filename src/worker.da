@@ -42,8 +42,9 @@ class Worker(process):
 		else:
 			return policyValue == dbValue
 
-	def validateRule(conditions, attribMap):
+	def validateRule(conditions, attribMap, attribSet):
 		for k in conditions.keys():
+			attribSet.add(k)
 			if not conditionSatisfied(conditions[k], attribMap[k]):
 				return False
 		return True
@@ -60,22 +61,48 @@ class Worker(process):
 			else:
 				updateMap[k] = v
 		return updateMap
+		
+	def mergeMaps(dbMap, inputMap):
+		result = {}
+		for k,v in dbMap.items():
+			result[k] = v
+		for k,v in inputMap.items():
+			result[k] = v[0]
+		return result
 					
 	def receive(msg= ('db_work_done',dbresponse)):
 		output('got dbresponse in worker.da')
-
-		subjAttribReqd = dict(dbresponse.dbSubjectMap.items() |
-			dbresponse.request.subjectAttributeMap.items())
-		resourceAttribReqd = dict(dbresponse.dbResourceMap.items() |
-			dbresponse.request.resourceAttributeMap.items())
+		
+		subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap, dbresponse.request.subjectAttributeMap)
+		resourceAttribReqd = mergeMap(dbresponse.readDbResourceMap, dbresponse.request.resourceAttributeMap)
 			
 		ruleMatch = False
+		readSubjAttrib = set()
+		readResourceAttrib = set()
+		
 		for rule in policyMap[dbresponse.request.action]:
-			if (validateRule(rule.subjectCondition,subjAttribReqd) and
-				validateRule(rule.resourceCondition,resourceAttribReqd)):
+			if (validateRule(rule.subjectCondition,subjAttribReqd, readSubjAttrib) and
+				validateRule(rule.resourceCondition,resourceAttribReqd, readResourceAttrib)):
 				ruleMatch = True
 				break
 
+		readDbSubjMap = {}
+		readDbresourceMap = {}
+		readSubjMap = {}
+		readresourceMap = {}
+		# Check read attribute is from tentative cache or 'db read'
+		for val in readSubjAttrib:
+			if val in dbresponse.readDbSubjectMap:
+				readDbSubjMap[val] = dbresponse.readDbSubjectMap[val]
+			else:
+				readSubjMap[val] = dbresponse.request.subjectAttributeMap[val]
+				
+		for val in readresourceMap:
+			if val in dbresponse.readDbResourceMap:
+				readDbresourceMap[val] = dbresponse.readDbResourceMap[val]
+			else:
+				readresourceMap[val] = dbresponse.request.resourceAttributeMap[val]
+						
 		toUpdateSubjectMap = {}
 		toUpdateResourceMap = {}
 		# If no rule has matched
@@ -85,8 +112,10 @@ class Worker(process):
 			# These are the attributes updated
 			toUpdateSubjectMap = getUpdatedMaps(rule.subjectUpdate,subjAttribReqd)
 			toUpdateResourceMap = getUpdatedMaps(rule.resourceUpdate,resourceAttribReqd)
-					
-		response = Response(dbresponse, toUpdateSubjectMap, toUpdateResourceMap)
+		
+		dbresponse.readDbSubjectMap = readDbSubjMap
+		dbresponse.readDbResourceMap = readDbresourceMap
+		response = Response(dbresponse, toUpdateSubjectMap, toUpdateResourceMap, readSubjMap, readresourceMap)
 		id = int(dbresponse.request.subjectID) % self.size
 		output("Returning updated maps to SC")
 		send(('WORKER_RESPONSE',response), to=(coordinators[id]))
