@@ -57,11 +57,11 @@ class Coordinator(process):
 
         # check for conflict
         conflictHappened = False
-        for key, _ in response.dbresponse.dbSubjectMap.items():
+        for key, _ in response.dbresponse.readDbSubjectMap.items():
             if key in tentativeSubjectCache or key in mainSubjectCache:
                 conflictHappened = True
 
-        for key, value in response.dbresponse.request.subjectAttributeMap.items():
+        for key, value in response.readSubjectAttributeMap.items():
             if key in mainSubjectCache:
                 if value[1] != mainSubjectCache[key][1]:
                     conflictHappened = True
@@ -99,11 +99,11 @@ class Coordinator(process):
         output('in response coordinator conflict check')
         # check for conflict
         conflictHappened = False
-        for key, _ in response.dbresponse.dbResourceMap.items():
+        for key, _ in response.dbresponse.readDbResourceMap.items():
             if key in resourceCache:
                 conflictHappened = True
 
-        for key, value in response.dbresponse.request.resourceAttributeMap.items():
+        for key, value in response.readResourceAttributeMap.items():
             if key in resourceCache:
                 if value[1] != resourceCache[key][1]:
                     conflictHappened = True
@@ -144,6 +144,7 @@ class Coordinator(process):
                 response.dbresponse.request.subjectID].items():
                 mainSubjectCache[response.dbresponse.request.subjectID][
                     key] = val
+            self.tentativeSubjectCache = {}
             requestQueue[response.dbresponse.request.subjectID].popleft()
             output('sending response to client')
             send(('RESULT_CLIENT', 'success'),
