@@ -102,7 +102,7 @@ class Worker(process):
             else:
                 readSubjMap[val] = dbresponse.request.subjectAttributeMap[val]
 
-        for val in readresourceMap:
+        for val in readResourceAttrib:
             if val in dbresponse.readDbResourceMap:
                 readDbresourceMap[val] = dbresponse.readDbResourceMap[val]
             else:

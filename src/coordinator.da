@@ -26,7 +26,8 @@ class Coordinator(process):
     # send to worker
     def receive(msg=('RESOURCE_COORDINATOR', request)):
         # update request with resourceAttributeMap
-        if request.requestID in resourceCache:
+
+        if request.resourceID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
             request.resourceAttributeMap = {}
@@ -99,13 +100,17 @@ class Coordinator(process):
         output('in response coordinator conflict check')
         # check for conflict
         conflictHappened = False
+        if not response.dbresponse.request.resourceID in resourceCache:
+            resourceCache[response.dbresponse.request.resourceID] = {}
         for key, _ in response.dbresponse.readDbResourceMap.items():
-            if key in resourceCache:
+            if key in resourceCache[response.dbresponse.request.resourceID]:
                 conflictHappened = True
 
         for key, value in response.readResourceAttributeMap.items():
-            if key in resourceCache:
-                if value[1] != resourceCache[key][1]:
+            if key in resourceCache[response.dbresponse.request.resourceID]:
+                if value[1] != \
+                        resourceCache[response.dbresponse.request.resourceID][
+                            key][1]:
                     conflictHappened = True
 
         if conflictHappened:
