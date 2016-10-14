@@ -8,6 +8,7 @@ from util import PolicyRule
 from util import Response
 
 class Worker(process):
+	
     def setup(coordinators, dbInstance, config):
         # self.logger = logging.getLogger('sLogger')
         self.coordinators = coordinators
@@ -27,12 +28,13 @@ class Worker(process):
                 request.requiredResourceAtrribs.add(k)
         send(('worker_get_from_db', request), to=dbInstance)
 
-    def conditionSatisfied(policyValue, dbValue):
-        if ((len(policyValue) > 0 and len(dbValue) > 0) and
+    def conditionSatisfied(policyValue, mapValue):
+    	    		
+        if ((len(policyValue) > 0 and len(mapValue) > 0) and
                 (policyValue[0] == ">" or policyValue[0] == "<")):
             try:
                 policyNum = int(policyValue[1:])
-                dbNum = int(dbValue)
+                dbNum = int(mapValue)
                 if (policyValue[0] == "<"):
                     return policyNum > dbNum
                 else:
@@ -40,16 +42,31 @@ class Worker(process):
             except:
                 return False
         else:
-            return policyValue == dbValue
+            return policyValue == mapValue
 
-    def validateRule(conditions, attribMap, attribSet):
+    def validateRule(conditions, attribMap, attribSet, subjAttribReqd, resourceAttribReqd):
         for k in conditions.keys():
             attribSet.add(k)
-            if not conditionSatisfied(conditions[k], attribMap[k]):
+            policyVal = conditions[k]
+            
+            if (conditions[k].startswith('$')):
+            	policyVal = checkDollar(conditions[k],
+									subjAttribReqd, resourceAttribReqd)
+            if not conditionSatisfied(policyVal, attribMap[k]):
                 return False
         return True
 
-    def getUpdatedMaps(ruleUpdate, attribMap):
+    def checkDollar(value, subjAttribReqd, resourceAttribReqd):
+    	if (value.startswith('$')):
+    		sOrR, attrib = value.split('.')
+    		sOrR = sOrR[1:]
+    		if (sOrR == "resource"):
+    			return resourceAttribReqd[attrib]
+    		else:
+    			return subjAttribReqd[attrib]
+    	return None
+ 	
+    def getUpdatedMaps(ruleUpdate, attribMap, subjAttribReqd, resourceAttribReqd):
         updateMap = {}
         if (ruleUpdate == None):
             return updateMap
@@ -59,9 +76,13 @@ class Worker(process):
             elif (v == "--"):
                 updateMap[k] = str(int(attribMap[k]) - 1)
             else:
-                updateMap[k] = v
-        return updateMap
+            	updateMap[k] = v
+            	retVal = checkDollar(v, subjAttribReqd, resourceAttribReqd)
+            	if retVal is not None:
+            		updateMap[k] = retVal
 
+        return updateMap
+            		
     def mergeMaps(dbMap, inputMap):
         result = {}
         for k, v in dbMap.items():
@@ -83,9 +104,9 @@ class Worker(process):
 
         for rule in policyMap[dbresponse.request.action]:
             if (validateRule(rule.subjectCondition, subjAttribReqd,
-                             readSubjAttrib) and
+                             readSubjAttrib, subjAttribReqd, resourceAttribReqd) and
                     validateRule(rule.resourceCondition, resourceAttribReqd,
-                                 readResourceAttrib)):
+                                 readResourceAttrib, subjAttribReqd, resourceAttribReqd)):
                 ruleMatch = True
                 break
 
@@ -114,10 +135,10 @@ class Worker(process):
             dbresponse.evaluation = False
         else:
             # These are the attributes updated
-            toUpdateSubjectMap = getUpdatedMaps(rule.subjectUpdate,
-                                                subjAttribReqd)
-            toUpdateResourceMap = getUpdatedMaps(rule.resourceUpdate,
-                                                 resourceAttribReqd)
+            toUpdateSubjectMap = getUpdatedMaps(rule.subjectUpdate,subjAttribReqd,
+											subjAttribReqd, resourceAttribReqd)
+            toUpdateResourceMap = getUpdatedMaps(rule.resourceUpdate, resourceAttribReqd,
+												subjAttribReqd, resourceAttribReqd)
 
         dbresponse.readDbSubjectMap = readDbSubjMap
         dbresponse.readDbResourceMap = readDbresourceMap
