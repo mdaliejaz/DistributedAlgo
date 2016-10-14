@@ -3,29 +3,30 @@ import da
 from util import Request
 import queue
 
+
 class Client(process):
     def setup(coordinators, config, num):
         self.size = len(coordinators)
         self.requestQueue = queue.Queue()
-        
-        sequence = config.get("client"+str(num), "sequence")
+
+        sequence = config.get("client" + str(num), "sequence")
         sequenceList = sequence.split(',')
         for seq in sequenceList:
             requestQueue.put([int(config.get(seq, "subjectID")),
                               int(config.get(seq, "resourceID")),
                               config.get(seq, "action")])
-    
+
     def sendToSC():
         elem = requestQueue.get()
         coordID = (elem[0]) % self.size
-        send(('CLIENT', elem[0], elem[1], elem[2]), to= coordinators[coordID])
-        
-    def receive(msg= ('RESULT_CLIENT', result)):
+        send(('CLIENT', elem[0], elem[1], elem[2]), to=coordinators[coordID])
+
+    def receive(msg=('RESULT_CLIENT', result)):
         if result == 'success':
-            output("Allow access to client"+str(num))
+            output("Allow access to client" + str(num))
         else:
-            output("Deny access to client"+str(num))
-        
+            output("Deny access to client" + str(num))
+
         sendToSC()
 
     def run():
