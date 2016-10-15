@@ -65,11 +65,11 @@ class Worker(process):
     def checkDollar(value, subjAttribReqd, resourceAttribReqd):
         if (value.startswith('$')):
             instance, attrib = value.split('.')
-        instance = instance[1:]
-        if (instance == "resource"):
-            return resourceAttribReqd[attrib]
-        else:
-            return subjAttribReqd[attrib]
+            instance = instance[1:]
+            if (instance == "resource"):
+                return resourceAttribReqd[attrib]
+            else:
+                return subjAttribReqd[attrib]
 
         return None
 
