@@ -21,8 +21,8 @@ class Coordinator(process):
         self.responseQueue = {}
         self.coordinators = coordinators
 
-        self.workers = new(worker.Worker,
-                           num=int(config.get("setup", "nworkerspercoord")))
+        nworkerspercoord = int(config.get("setup", "nworkerspercoord"))
+        self.workers = new(worker.Worker, num=nworkerspercoord)
         self.workerList = list(self.workers)
         self.workerSequence = -1
         setup(self.workers, (self.coordinators, dbInstance, config,))
@@ -290,5 +290,6 @@ class Coordinator(process):
         send(('RESOURCE_COORDINATOR', request), to=(coordinators[id]))
 
     def run():
-        output('coordinator starting...')
+        logger.info("Starting Coordinator with %d workers",
+                    self.nworkerspercoord)
         await(received(('done',)))

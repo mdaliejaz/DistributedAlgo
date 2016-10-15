@@ -19,8 +19,10 @@ class Worker(process):
 
     def receive(msg=('WORKER_ASSIGN', request)):
         # policy evaluation
-        logger.info("Received message from coordinator for Request{Subject "
-                    "ID: %d, Resource ID: %d, Action: %s}",
+        logger.info("Received message from coordinator for Request:"
+                    "\n\tSubject ID: %d"
+                    "\n\tResource ID: %d"
+                    "\n\tAction: %s}",
                     request.subjectID, request.subjectID, request.action)
         # For all the rules associated for that action
         for rule in policyMap[request.action]:
@@ -28,13 +30,11 @@ class Worker(process):
                 request.requiredSubjAtrribs.add(k)
             for k in rule.resourceCondition.keys():
                 request.requiredResourceAtrribs.add(k)
-        logger.info(
-            "Sending message to initiate database read for attributes not in cache")
-        # logger.debug("LLLLLRequest: %s", str(request))
+        logger.info("Sending message to initiate database read for attributes "
+                    "not in cache for Request:%s", request)
         send(('worker_get_from_db', request), to=dbInstance)
 
     def conditionSatisfied(policyValue, mapValue):
-
         if ((len(policyValue) > 0 and len(mapValue) > 0) and
                 (policyValue[0] == ">" or policyValue[0] == "<")):
             try:
@@ -99,7 +99,7 @@ class Worker(process):
         return result
 
     def receive(msg=('db_work_done', dbresponse)):
-        output('got dbresponse in worker.da')
+        logger.info("Received following DB response:%s", dbresponse)
         subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap,
                                    dbresponse.request.subjectAttributeMap)
         resourceAttribReqd = mergeMaps(dbresponse.readDbResourceMap,
@@ -157,6 +157,8 @@ class Worker(process):
         dbresponse.readDbResourceMap = readDbresourceMap
         response = Response(dbresponse, toUpdateSubjectMap, toUpdateResourceMap,
                             readSubjMap, readresourceMap)
+        logger.info("Sending following Worker Response to Subject "
+                    "Coordinator:%s", response)
         id = int(dbresponse.request.subjectID) % self.size
         send(('WORKER_RESPONSE', response), to=(coordinators[id]))
 
