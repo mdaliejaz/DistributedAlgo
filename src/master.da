@@ -14,7 +14,6 @@ def main():
 
     ncoordinators = int(config.get("setup", "ncoordinators"))
     nclients = int(config.get("setup", "nclients"))
-    dbInitFile = str(config.get("setup", "dbInitFile"))
     logConfFile = str(config.get("setup", "logConfFile"))
 	
     # logging.config.fileConfig(str(logConfFile),
@@ -27,7 +26,7 @@ def main():
     clients = new(cl.Client, num=nclients)
 
     listcoord = list(coordinators)
-    setup(dbInstance, (dbInitFile,))
+    setup(dbInstance, (config,))
     setup(coordinators, (listcoord, dbInstance, config))
     num = 1
     for client in clients:

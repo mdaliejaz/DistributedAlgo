@@ -1,14 +1,20 @@
 import sys
 import da
+import random
 import xml.etree.ElementTree as ET
 from util import DBResponse
-
+from threading import Timer
 
 class Database(process):
-    def setup(file):
-        self.root = ET.parse(file).getroot()
+    def setup(config):
+        dbInitFile = str(config.get("setup", "dbInitFile"))
+        minDbLatency = int(config.get("setup", "minDbLatency"))
+        maxDbLatency = int(config.get("setup", "maxDbLatency"))
+
+        self.root = ET.parse(dbInitFile).getroot()
         self.subjectMap = {}
         self.resourceMap = {}
+        self.waitTime = random.randint(minDbLatency, maxDbLatency)
 
     def receive(msg=('worker_get_from_db', request), from_=p):
         output("in db: received request from worker for subject id " + str(
@@ -49,6 +55,18 @@ class Database(process):
         response = DBResponse(request, evaluation, subjAttribDiff,
                               resourceAttribDiff)
         send(('db_work_done', response), to=p)
+
+    def receive(msg=('COMMIT_TO_DB', updateMap, instance), from_= p):
+        Timer(waitTime, updateFunc, [updateMap, instance]).start()
+
+    def updateFunc(updateMap, instance):
+        key = next(iter(updateMap))
+        value = updateMap[key]
+        if (instance == "resource"):
+            self.resourceMap[key].update(value)
+        else:
+            self.subjectMap[key].update(value)
+        # Log Db update complete
 
     def run():
         output('database starting...')

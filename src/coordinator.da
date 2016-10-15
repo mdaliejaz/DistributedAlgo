@@ -137,11 +137,15 @@ class Coordinator(process):
             output('resource attr conflict happened')
 
         if not conflictHappened:
+            dbCommitMap = {}
             if not resourceID in resourceCache:
                 resourceCache[resourceID] = {}
             for key, value in response.toUpdateResourceMap.items():
                 timestamp = int(time.time() * 1000000)
                 resourceCache[resourceID][key] = (value, timestamp)
+            dbCommitMap[str(resourceID)] = response.toUpdateResourceMap
+            send(('COMMIT_TO_DB',
+              dbCommitMap, "resource"), to= (dbInstance))
 
         id = int(response.dbresponse.request.subjectID) % len(coordinators)
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
@@ -163,23 +167,29 @@ class Coordinator(process):
                   response.dbresponse.request.action,
                   response.dbresponse.request.fromClient), to=coordinators[id])
         else:
+            dbCommitMap = {}
             if not subjectID in mainSubjectCache:
                 mainSubjectCache[subjectID] = {}
             for key, val in tentativeSubjectCache[subjectID].items():
                 mainSubjectCache[subjectID][key] = val
+
             self.tentativeSubjectCache = {}
             requestQueue[subjectID].popleft()
             output('sending response to client - success')
             send(('RESULT_CLIENT', 'success'),
                  to=response.dbresponse.request.fromClient)
- 
+
+            dbCommitMap[str(subjectID)] = response.toUpdateSubjectMap
+            send(('COMMIT_TO_DB',
+              dbCommitMap, "subject"), to= (dbInstance))
+
         checkResponseQueue(subjectID) 
                      
     # subject coordinator instance
     # receive from client
     # send to resource coordinator
     def receive(msg=('CLIENT', subjectID, resourceID, action, clientRestartReq),
-                from_=clientReq):
+                from_= clientReq):
         output(
             'client message received subjectID=' + str(subjectID)
             + ', resourceID=' + str(resourceID))
