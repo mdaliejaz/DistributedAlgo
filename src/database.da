@@ -16,6 +16,14 @@ class Database(process):
         evaluation = True
         subjAttribDiff = {}
         resourceAttribDiff = {}
+        subjectID = str(request.subjectID)
+        resourceID = str(request.resourceID)
+
+        if subjectID not in self.subjectMap:
+            self.subjectMap[subjectID] = {}
+        if resourceID not in self.resourceMap:
+            self.resourceMap[resourceID] = {}
+
         try:
             subjAttribDiffSet = request.requiredSubjAtrribs - set(
                 request.subjectAttributeMap.keys())
@@ -23,11 +31,18 @@ class Database(process):
                 request.resourceAttributeMap.keys())
 
             for subj in subjAttribDiffSet:
-                subjAttribDiff[subj] = self.subjectMap[str(request.subjectID)][
-                    subj]
+                try:
+                    subjAttribDiff[subj] = self.subjectMap[subjectID][subj]
+                except:
+                    self.subjectMap[subjectID][subj] = ""
+                    subjAttribDiff[subj] = ""
+
             for resource in resourceAttribDiffSet:
-                resourceAttribDiff[resource] = \
-                self.resourceMap[str(request.resourceID)][resource]
+                try:
+                    resourceAttribDiff[resource] = self.resourceMap[resourceID][resource]
+                except:
+                    self.resourceMap[resourceID][resource] = ""
+                    resourceAttribDiff[resource] = ""
         except:
             evaluation = False
 
