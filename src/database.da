@@ -21,11 +21,9 @@ class Database(process):
         self.resourceMap = {}
         self.waitTime = random.randint(minDbLatency, maxDbLatency)
 
-    def receive(msg=('worker_get_from_db', request), from_=p):
+    def receive(msg=('GET_FROM_DB', request), from_=p):
         logger.info("Received request from Worker to get attributes for "
                     "following request:%s", request)
-        # output("in db: received request from worker for subject id " + str(
-        #     request.subjectID))
         evaluation = True
         subjAttribDiff = {}
         resourceAttribDiff = {}
@@ -64,7 +62,7 @@ class Database(process):
                               resourceAttribDiff)
         logger.info("Sending following response to Worker with updated "
                     "attributes from database:%s", response)
-        send(('db_work_done', response), to=p)
+        send(('DB_RESPONSE', response), to=p)
 
     def receive(msg=('COMMIT_TO_DB', updateMap, instance), from_=p):
         logger.info("Received to update database for %s attributes with map: "
@@ -80,7 +78,8 @@ class Database(process):
             self.resourceMap[key].update(value)
         else:
             self.subjectMap[key].update(value)
-            # Log Db update complete
+        logger.info("Successfully updated database for %s attributes "
+                    "with map: %s", instance, updateMap)
 
     def run():
         logger.info("Started Database Instance with dbInitFile = %s, "

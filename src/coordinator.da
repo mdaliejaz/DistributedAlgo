@@ -103,15 +103,18 @@ class Coordinator(process):
                             "request", key,
                             response.dbresponse.request.requestID)
                 conflictHappened = True
+                break
 
-        for key, value in response.readSubjectAttributeMap.items():
-            if key in mainSubjectCache:
-                if value[1] != mainSubjectCache[key][1]:
-                    logger.info("Subject Coordinator: Conflict Happened: "
-                                "The attribute %s read from tentative cache "
-                                "for this request happened to be updated by "
-                                "some other previous request", key)
-                    conflictHappened = True
+        if not conflictHappened:
+            for key, value in response.readSubjectAttributeMap.items():
+                if key in mainSubjectCache:
+                    if value[1] != mainSubjectCache[key][1]:
+                        logger.info("Subject Coordinator: Conflict Happened: "
+                                    "The attribute %s read from tentative cache "
+                                    "for this request happened to be updated by "
+                                    "some other previous request", key)
+                        conflictHappened = True
+                        break
 
         if conflictHappened:
             # conflict happened, restart
@@ -166,19 +169,19 @@ class Coordinator(process):
                             "request", key,
                             response.dbresponse.request.requestID)
                 conflictHappened = True
+                break
 
-        for key, value in response.readResourceAttributeMap.items():
-            if key in resourceCache[resourceID]:
-                if value[1] != resourceCache[resourceID][key][1]:
-                    logger.info("Resource Coordinator: Conflict Happened: "
-                                "The attribute %s read from resource cache "
-                                "for this request happened to be updated by "
-                                "some other previous request", key)
-                    conflictHappened = True
-
-        # if conflictHappened:
-        #     # conflict happened, restart
-        #     output('resource attr conflict happened')
+        if not conflictHappened:
+            for key, value in response.readResourceAttributeMap.items():
+                if key in resourceCache[resourceID]:
+                    if value[1] != resourceCache[resourceID][key][1]:
+                        logger.info("Resource Coordinator: Conflict Happened: "
+                                    "The attribute %s read from resource "
+                                    "cache for this request happened to be "
+                                    "updated by some other previous request",
+                                    key)
+                        conflictHappened = True
+                        break
 
         if not conflictHappened:
             dbCommitMap = {}

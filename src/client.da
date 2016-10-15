@@ -55,7 +55,6 @@ class Client(process):
 
         elem = requestQueue.get()
         if (elem == None):
-            output("None")
             self.exit = True
             return
         coordID = (elem[0]) % self.size

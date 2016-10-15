@@ -32,7 +32,7 @@ class Worker(process):
                 request.requiredResourceAtrribs.add(k)
         logger.info("Sending message to initiate database read for attributes "
                     "not in cache for Request:%s", request)
-        send(('worker_get_from_db', request), to=dbInstance)
+        send(('GET_FROM_DB', request), to=dbInstance)
 
     def conditionSatisfied(policyValue, mapValue):
         if ((len(policyValue) > 0 and len(mapValue) > 0) and
@@ -99,7 +99,7 @@ class Worker(process):
             result[k] = v[0]
         return result
 
-    def receive(msg=('db_work_done', dbresponse)):
+    def receive(msg=('DB_RESPONSE', dbresponse)):
         logger.info("Received following DB response:%s", dbresponse)
         subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap,
                                    dbresponse.request.subjectAttributeMap)
