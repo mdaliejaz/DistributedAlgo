@@ -44,3 +44,8 @@ def main():
     start(dbInstance)
     start(coordinators)
     start(clients)
+
+    for c in clients: c.join()
+    logger.info("All processes completed. Terminating...")
+    print("All processes completed. Terminating...")
+    da.send(('done',), to=(dbInstance | coordinators))

@@ -13,6 +13,7 @@ class Client(process):
         self.logger = logging.getLogger('Log.' + __name__)
         self.size = len(coordinators)
         self.requestQueue = queue.Queue()
+        self.exit = False
 
         sequenceList = []
         sequence = config.get("client" + str(num), "sequence")
@@ -25,6 +26,9 @@ class Client(process):
             requestQueue.put([int(config.get(seq, "subjectID")),
                               int(config.get(seq, "resourceID")),
                               config.get(seq, "action")])
+        # Hack to mark the end of queue.
+        # Library methods are not working for some reason
+        requestQueue.put(None)
 
     def getRandomsequenceList(config, client):
         numReq = int(config.get(client, "numReq"))
@@ -39,7 +43,21 @@ class Client(process):
         return sequenceList
 
     def sendToSubjectCoordinator():
+        # Implementation 1 - didn't work
+        # if self.requestQueue.empty():
+        #     self.exit = True
+
+        # Implementation 2 - didn't work
+        # try:
+        #     elem = self.requestQueue.get()
+        # except queue.Empty():
+        #     self.exit = True
+
         elem = requestQueue.get()
+        if (elem == None):
+            output("None")
+            self.exit = True
+            return
         coordID = (elem[0]) % self.size
         logger.info("Client %d sending Request{Subject ID: %d, Resource ID: "
                     "%d, action: %s} to coordinator %d", self.num, elem[0],
@@ -62,4 +80,4 @@ class Client(process):
     def run():
         logger.info("Started Client %d", self.num)
         sendToSubjectCoordinator()
-        await(received(('done',)))
+        await(self.exit == True)

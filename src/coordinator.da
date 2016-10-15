@@ -21,8 +21,8 @@ class Coordinator(process):
         self.responseQueue = {}
         self.coordinators = coordinators
 
-        nworkerspercoord = int(config.get("setup", "nworkerspercoord"))
-        self.workers = new(worker.Worker, num=nworkerspercoord)
+        self.nworkerspercoord = int(config.get("setup", "nworkerspercoord"))
+        self.workers = new(worker.Worker, num=self.nworkerspercoord)
         self.workerList = list(self.workers)
         self.workerSequence = -1
         setup(self.workers, (self.coordinators, dbInstance, config,))
@@ -293,3 +293,6 @@ class Coordinator(process):
         logger.info("Starting Coordinator with %d workers",
                     self.nworkerspercoord)
         await(received(('done',)))
+        da.send(('done',), to=(self.workers))
+        # for w in self.workers: w.join()
+        output("terminating coordinator...")
