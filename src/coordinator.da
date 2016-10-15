@@ -4,18 +4,23 @@ import uuid
 import worker
 import time
 import queue
+import logging
+import logging.config
+import logging.handlers
 from util import Request
 from collections import deque
 
+
 class Coordinator(process):
     def setup(coordinators, dbInstance, config):
+        self.logger = logging.getLogger('Log.' + __name__)
         self.tentativeSubjectCache = {}
         self.mainSubjectCache = {}
         self.resourceCache = {}
         self.requestQueue = {}
         self.responseQueue = {}
         self.coordinators = coordinators
-        
+
         self.workers = new(worker.Worker,
                            num=int(config.get("setup", "nworkerspercoord")))
         self.workerList = list(self.workers)
@@ -28,74 +33,99 @@ class Coordinator(process):
     # send to worker
     def receive(msg=('RESOURCE_COORDINATOR', request)):
         # update request with resourceAttributeMap
+        logger.info("Resource Coordinator: Received the following parameters "
+                    "from Subject Coordinator:%s", request)
         if request.resourceID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
             request.resourceAttributeMap = {}
+
         # send request to worker
-        output('resource coordinator received: subjectID = ',
-               request.subjectID, ', resourceID = ', request.resourceID)
+        logger.info("Resource Coordinator: Sending the following parameters "
+                    "to Worker:%s", request)
         workerSequence = (workerSequence + 1) % len(workerList)
-        send(('WORKER_ASSIGN', request), to= workerList[workerSequence])
+        send(('WORKER_ASSIGN', request), to=workerList[workerSequence])
 
     # subject coordinator instance, checks subject attribute conflicts
     # receive from worker
     # send to resource coordinator (for resource conflicts)
     def receive(msg=('WORKER_RESPONSE', response)):
+        logger.info("Subject Coordinator: Received the following parameters "
+                    "from Worker:%s", response)
         requestID = response.dbresponse.request.requestID
         subjectID = response.dbresponse.request.subjectID
         resourceID = response.dbresponse.request.resourceID
-        
-        output('WORKER_RESPONSE, subjectID=' + str(subjectID) +
-               ', resource=' + str(resourceID))
-        
+
+        # output('WORKER_RESPONSE, subjectID=' + str(subjectID) +
+        #        ', resource=' + str(resourceID))
+
         if requestID != requestQueue[subjectID][0]:
             responseQueue[requestID] = response
             return
-        
+
         checkConflicts(response)
- 
+
     def checkResponseQueue(subjectID):
-        if  requestQueue[subjectID] and (requestQueue[subjectID][0] in responseQueue):
+        if requestQueue[subjectID] and (
+                    requestQueue[subjectID][0] in responseQueue):
             resp = responseQueue[requestQueue[subjectID][0]]
             del responseQueue[requestQueue[subjectID][0]]
             checkConflicts(resp)
         return
-    
+
     def checkConflicts(response):
-        requestID = response.dbresponse.request.requestID
         subjectID = response.dbresponse.request.subjectID
         fromClient = response.dbresponse.request.fromClient
         resourceID = response.dbresponse.request.resourceID
-        
+        action = response.dbresponse.request.action
+
         # send result if evaluation is false
         if not response.dbresponse.evaluation:
             requestQueue[subjectID].popleft()
-            output('sending response to client - failure')
-            send(('RESULT_CLIENT', 'false'), to=fromClient)
+            logger.info("Subject Coordinator: Sending failure result to Client:"
+                        "\n\tEvaluation Result = Deny"
+                        "\n\tSubject ID = %s"
+                        "\n\tResource ID = %s"
+                        "\n\tAction = %s", subjectID, resourceID, action)
+            # output('sending response to client - failure')
+            send(('RESULT_CLIENT', 'false', subjectID, resourceID, action),
+                 to=fromClient)
             checkResponseQueue(subjectID)
             return
-        
+
         # check for conflict
         conflictHappened = False
         for key, _ in response.dbresponse.readDbSubjectMap.items():
             if key in tentativeSubjectCache or key in mainSubjectCache:
+                logger.info("Subject Coordinator: Conflict Happened: "
+                            "The attribute %s read from database for "
+                            "Request ID = %s, was updated by a previous "
+                            "request", key,
+                            response.dbresponse.request.requestID)
                 conflictHappened = True
 
         for key, value in response.readSubjectAttributeMap.items():
             if key in mainSubjectCache:
                 if value[1] != mainSubjectCache[key][1]:
+                    logger.info("Subject Coordinator: Conflict Happened: "
+                                "The attribute %s read from tentative cache "
+                                "for this request happened to be updated by "
+                                "some other previous request", key)
                     conflictHappened = True
 
         if conflictHappened:
             # conflict happened, restart
-            output('subject attr conflict happened')
             self.tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
+            logger.info("Subject Coordinator: Restarting request due to "
+                        "conflict in subject attribute(s) for request:"
+                        "\n\tSubject ID = %s"
+                        "\n\tResource ID = %s"
+                        "\n\tAction = %s", subjectID, resourceID, action)
             id = int(subjectID) % len(coordinators)
             send(('CLIENT', subjectID, resourceID,
                   response.dbresponse.request.action,
-                  fromClient),to=coordinators[id])
+                  fromClient), to=coordinators[id])
             checkResponseQueue(subjectID)
             return
 
@@ -106,35 +136,49 @@ class Coordinator(process):
         for key, value in response.toUpdateSubjectMap.items():
             timestamp = int(time.time() * 1000000)
             tentativeSubjectCache[subjectID][key] = (value, timestamp)
-        output('sending to coordinator ', resourceID)
+
+        logger.info("Subject Coordinator: No conflicts in subject attributes. "
+                    "Sending response to Resource Coordinator to check for "
+                    "resource attribute conflicts: %s", response)
         # send to resource coordinator to check for resource attribute conflict
         id = int(response.dbresponse.request.resourceID) % len(coordinators)
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK', response),
              to=coordinators[id])
-                
+
     # resource coordinator instance, checks resource attribute conflicts
     # receive from subject coordinator
     # send to subject coordinator
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK', response)):
-        output('in response coordinator conflict check')
+        logger.info("Resource Coordinator: Received the foolowing response "
+                    "from Subject Coordinator to check for resource attribute "
+                    "conflicts: %s", response)
         # check for conflict
         conflictHappened = False
         resourceID = response.dbresponse.request.resourceID
-        
+
         if not resourceID in resourceCache:
             resourceCache[resourceID] = {}
         for key, _ in response.dbresponse.readDbResourceMap.items():
             if key in resourceCache[resourceID]:
+                logger.info("Resource Coordinator: Conflict Happened: "
+                            "The attribute %s read from database for "
+                            "Request ID = %s, was updated by a previous "
+                            "request", key,
+                            response.dbresponse.request.requestID)
                 conflictHappened = True
 
         for key, value in response.readResourceAttributeMap.items():
             if key in resourceCache[resourceID]:
                 if value[1] != resourceCache[resourceID][key][1]:
+                    logger.info("Resource Coordinator: Conflict Happened: "
+                                "The attribute %s read from resource cache "
+                                "for this request happened to be updated by "
+                                "some other previous request", key)
                     conflictHappened = True
 
-        if conflictHappened:
-            # conflict happened, restart
-            output('resource attr conflict happened')
+        # if conflictHappened:
+        #     # conflict happened, restart
+        #     output('resource attr conflict happened')
 
         if not conflictHappened:
             dbCommitMap = {}
@@ -144,9 +188,14 @@ class Coordinator(process):
                 timestamp = int(time.time() * 1000000)
                 resourceCache[resourceID][key] = (value, timestamp)
             dbCommitMap[str(resourceID)] = response.toUpdateResourceMap
-            send(('COMMIT_TO_DB',
-              dbCommitMap, "resource"), to= (dbInstance))
+            logger.info("Resource Coordinator: Sending message to DB to "
+                        "commit the updated resource attributes: %s",
+                        dbCommitMap)
+            send(('COMMIT_TO_DB', dbCommitMap, "resource"), to=(dbInstance))
 
+        logger.info("Resource Coordinator: Sending  back the response to "
+                    "Subject Coordinator with status \'conflict in resource "
+                    "attributes happened = %s\'", str(conflictHappened))
         id = int(response.dbresponse.request.subjectID) % len(coordinators)
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
               (response, conflictHappened)), to=coordinators[id])
@@ -156,15 +205,24 @@ class Coordinator(process):
     # send to client, if no conflict happened
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
                      (response, conflictHappened))):
+        logger.info("Subject Coordinator: Received following response from "
+                    "Resource Coordinator with:\n\t'conflict in resource "
+                    "attributes happened = %s\'\n%s", str(conflictHappened),
+                    response)
         subjectID = response.dbresponse.request.subjectID
-        
+        resourceID = response.dbresponse.request.resourceID
+        action = response.dbresponse.request.action
+
         if conflictHappened:
             id = int(subjectID) % len(coordinators)
             tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
-            send(('CLIENT', subjectID,
-                  response.dbresponse.request.resourceID,
-                  response.dbresponse.request.action,
+            logger.info("Subject Coordinator: Restarting request due to "
+                        "conflict in resource attribute(s) for request:"
+                        "\n\tSubject ID = %s"
+                        "\n\tResource ID = %s"
+                        "\n\tAction = %s", subjectID, resourceID, action)
+            send(('CLIENT', subjectID, resourceID, action,
                   response.dbresponse.request.fromClient), to=coordinators[id])
         else:
             dbCommitMap = {}
@@ -175,28 +233,39 @@ class Coordinator(process):
 
             self.tentativeSubjectCache = {}
             requestQueue[subjectID].popleft()
-            output('sending response to client - success')
-            send(('RESULT_CLIENT', 'success'),
+            # output('sending response to client - success')
+            logger.info("Subject Coordinator: Sending success result to Client:"
+                        "\n\tEvaluation Result = Allow"
+                        "\n\tSubject ID = %s"
+                        "\n\tResource ID = %s"
+                        "\n\tAction = %s", subjectID, resourceID, action)
+            send(('RESULT_CLIENT', 'success', subjectID, resourceID, action),
                  to=response.dbresponse.request.fromClient)
 
             dbCommitMap[str(subjectID)] = response.toUpdateSubjectMap
-            send(('COMMIT_TO_DB',
-              dbCommitMap, "subject"), to= (dbInstance))
+            logger.info("Subject Coordinator: Sending message to DB to "
+                        "commit the updated subject attributes: %s",
+                        response.toUpdateSubjectMap)
+            send(('COMMIT_TO_DB', dbCommitMap, "subject"), to=(dbInstance))
 
-        checkResponseQueue(subjectID) 
-                     
-    # subject coordinator instance
+        checkResponseQueue(subjectID)
+
+        # subject coordinator instance
+
     # receive from client
     # send to resource coordinator
     def receive(msg=('CLIENT', subjectID, resourceID, action, clientRestartReq),
-                from_= clientReq):
-        output(
-            'client message received subjectID=' + str(subjectID)
-            + ', resourceID=' + str(resourceID))
-        
+                from_=clientReq):
+        logger.info("Subject Coordinator: Received request with following "
+                    "parameters from Client:"
+                    "\n\tSubject ID = %s\n\tResource ID = %s\n\tAction = %s",
+                    str(subjectID),
+                    str(resourceID),
+                    str(action))
+
         if clientRestartReq is not None:
             clientReq = clientRestartReq
-            
+
         # generate unique request ID and put in queue (lock?)
         requestID = uuid.uuid4()
         if not subjectID in requestQueue:
@@ -214,7 +283,9 @@ class Coordinator(process):
 
         # frame request and forward to Resource coordinator
         request = Request(requestID, clientReq, subjectID, resourceID,
-                          action, subjectAttributeMap, None)
+                          action, subjectAttributeMap, {})
+        logger.info("Subject Coordinator: Sending the following parameters "
+                    "to Resource Coordinator:%s", request)
         id = int(resourceID) % len(coordinators)
         send(('RESOURCE_COORDINATOR', request), to=(coordinators[id]))
 

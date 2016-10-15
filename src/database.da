@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
 from util import DBResponse
 from threading import Timer
 
+
 class Database(process):
     def setup(config):
         dbInitFile = str(config.get("setup", "dbInitFile"))
@@ -45,7 +46,8 @@ class Database(process):
 
             for resource in resourceAttribDiffSet:
                 try:
-                    resourceAttribDiff[resource] = self.resourceMap[resourceID][resource]
+                    resourceAttribDiff[resource] = self.resourceMap[resourceID][
+                        resource]
                 except:
                     self.resourceMap[resourceID][resource] = ""
                     resourceAttribDiff[resource] = ""
@@ -56,7 +58,7 @@ class Database(process):
                               resourceAttribDiff)
         send(('db_work_done', response), to=p)
 
-    def receive(msg=('COMMIT_TO_DB', updateMap, instance), from_= p):
+    def receive(msg=('COMMIT_TO_DB', updateMap, instance), from_=p):
         Timer(waitTime, updateFunc, [updateMap, instance]).start()
 
     def updateFunc(updateMap, instance):
@@ -66,7 +68,7 @@ class Database(process):
             self.resourceMap[key].update(value)
         else:
             self.subjectMap[key].update(value)
-        # Log Db update complete
+            # Log Db update complete
 
     def run():
         output('database starting...')

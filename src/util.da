@@ -12,15 +12,31 @@ class Request(object):
         self.requiredSubjAtrribs = set()
         self.requiredResourceAtrribs = set()
 
+    def __str__(self):
+        return "\n\tRequest ID = {}\n\tSubject ID = {" \
+               "}\n\tResource ID = {}\n\tAction = {}\n\t" \
+               "Subject Attribute Map = {" \
+               "}\n\tResource Attribute Map = {}".format(
+            self.requestID, self.subjectID, self.resourceID, self.action,
+            self.subjectAttributeMap, self.resourceAttributeMap)
+
 
 class DBResponse(object):
     def __init__(self, request, evaluation, readDbSubjectMap,
                  readDbResourceMap):
         self.request = request
         self.evaluation = evaluation
-        # Maps which contain fields read from DB which are not in tentative maps and used for policy evaluation
+        # Maps which contain fields read from DB
+        # which are not in tentative maps and used for policy evaluation
         self.readDbSubjectMap = readDbSubjectMap
         self.readDbResourceMap = readDbResourceMap
+
+    def __str__(self):
+        return "{}\n\tEvaluation Result = {}" \
+               "\n\tSubject Map read from DB = {}" \
+               "\n\tResource Map read from DB = {}".format(
+            self.request, self.evaluation, self.readDbSubjectMap,
+            self.readDbResourceMap)
 
 
 class Response(object):
@@ -34,6 +50,15 @@ class Response(object):
         self.readSubjectAttributeMap = readSubjectAttributeMap
         self.readResourceAttributeMap = readResourceAttributeMap
 
+    def __str__(self):
+        return "{}" \
+               "\n\tMap with updated subject attributes = {}" \
+               "\n\tMap with updated resource attributes = {}" \
+               "\n\tMap with read subject attributes = {}" \
+               "\n\tMap with read resource attributes = {}".format(
+            self.dbresponse, self.toUpdateSubjectMap, self.toUpdateResourceMap,
+            self.readSubjectAttributeMap, self.readResourceAttributeMap)
+
 
 class PolicyRule(object):
     def __init__(self, subjectCondition, resourceCondition, subjectUpdate,
@@ -42,3 +67,11 @@ class PolicyRule(object):
         self.resourceCondition = resourceCondition
         self.subjectUpdate = subjectUpdate
         self.resourceUpdate = resourceUpdate
+
+    def __str__(self):
+        return "\n\tSubject Condition = {}" \
+               "\n\tResource Condition = {}" \
+               "\n\tSubject Update = {}" \
+               "\n\tSubject Update = {}".format(
+            self.subjectCondition, self.resourceCondition,
+            self.subjectUpdate, self.resourceUpdate)
