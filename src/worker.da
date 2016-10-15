@@ -63,15 +63,16 @@ class Worker(process):
         return True
 
     def checkDollar(value, subjAttribReqd, resourceAttribReqd):
-		if (value.startswith('$')):
-			instance, attrib = value.split('.')
-    		instance = instance[1:]
-    		if (instance == "resource"):
-    			return resourceAttribReqd[attrib]
-    		else:
-    			return subjAttribReqd[attrib]
-    	return None
- 	
+        if (value.startswith('$')):
+            instance, attrib = value.split('.')
+        instance = instance[1:]
+        if (instance == "resource"):
+            return resourceAttribReqd[attrib]
+        else:
+            return subjAttribReqd[attrib]
+
+        return None
+
     def getUpdatedMaps(ruleUpdate, attribMap, subjAttribReqd,
                        resourceAttribReqd):
         updateMap = {}
