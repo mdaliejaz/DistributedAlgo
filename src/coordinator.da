@@ -13,6 +13,10 @@ from collections import deque
 
 class Coordinator(process):
     def setup(coordinators, dbInstance, config):
+        '''
+            Coordinator setup. Setup and start the workers.
+            Initialize maps and other data structures.
+        '''
         self.logger = logging.getLogger('Log.' + __name__)
         self.tentativeSubjectCache = {}
         self.mainSubjectCache = {}
@@ -28,13 +32,14 @@ class Coordinator(process):
         setup(self.workers, (self.coordinators, dbInstance, config,))
         start(self.workers)
 
-    # resource coordinator instance
-    # receive from subject coordinator
-    # send to worker
     def receive(msg=('RESOURCE_COORDINATOR', request)):
-        # update request with resourceAttributeMap
+        '''
+            Resource coordinator instance
+            Receives from subject coordinator and sends to worker
+        '''
         logger.info("Resource Coordinator: Received the following parameters "
                     "from Subject Coordinator:%s", request)
+        
         # Printing for responseQueue.ini
         try:
             config.get("setup", "responseQueueDelay")
@@ -44,21 +49,25 @@ class Coordinator(process):
                   "Coordinator".format(request.requestID))
         except:
             pass
+        
         if request.resourceID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
             request.resourceAttributeMap = {}
 
-        # send request to worker
+        # Send request to worker for policy evaluation
         logger.info("Resource Coordinator: Sending the following parameters "
                     "to Worker:%s", request)
         workerSequence = (workerSequence + 1) % len(workerList)
         send(('WORKER_ASSIGN', request), to=workerList[workerSequence])
 
-    # subject coordinator instance, checks subject attribute conflicts
-    # receive from worker
-    # send to resource coordinator (for resource conflicts)
+
     def receive(msg=('WORKER_RESPONSE', response)):
+        '''
+            Subject coordinator instance, checks subject attribute conflicts
+            Receives from worker and sends to resource coordinator
+                (for resource conflicts)
+        '''
         logger.info("Subject Coordinator: Received the following parameters "
                     "from Worker:%s", response)
         requestID = response.dbresponse.request.requestID
@@ -87,9 +96,15 @@ class Coordinator(process):
                 pass
             return
 
+        # Call function check subject and / or resource conflicts
         checkConflicts(response)
 
     def checkResponseQueue(subjectID):
+        '''
+            If the request on top of request queue is present in
+            response queue then delete from response queue and
+            call check conflict function
+        '''
         if requestQueue[subjectID] and (
                     requestQueue[subjectID][0] in responseQueue):
             resp = responseQueue[requestQueue[subjectID][0]]
@@ -114,7 +129,7 @@ class Coordinator(process):
         except:
             pass
 
-        # send result if evaluation is false
+        # Send result to client if evaluation is false
         if not response.dbresponse.evaluation:
             requestQueue[subjectID].popleft()
             logger.info("Subject Coordinator: Sending failure result to Client:"
@@ -128,9 +143,11 @@ class Coordinator(process):
             checkResponseQueue(subjectID)
             return
 
-        # check for conflict
+        # Check for subject attribute conflicts
         conflictHappened = False
         for key, _ in response.dbresponse.readDbSubjectMap.items():
+            # If key is read from DB but some one else had already put
+            #     this in the main cache then conflict
             if (subjectID in mainSubjectCache) and (
                         key in mainSubjectCache[subjectID]):
                 logger.info("Subject Coordinator: Conflict Happened: "
@@ -143,6 +160,8 @@ class Coordinator(process):
 
         if not conflictHappened:
             for key, value in response.readSubjectAttributeMap.items():
+                # If the timestamp for this key from this request is not the
+                #    same as tentative read by this request, then conflict
                 if (subjectID in mainSubjectCache) and (
                             key in mainSubjectCache[subjectID]):
                     if value[1] != mainSubjectCache[subjectID][key][1]:
@@ -162,7 +181,7 @@ class Coordinator(process):
                     break
 
         if conflictHappened:
-            # conflict happened, restart
+            # Conflict happened, Empty tentative subject cache and restart
             self.tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
             logger.info("Subject Coordinator: Restarting request due to "
@@ -177,8 +196,7 @@ class Coordinator(process):
             checkResponseQueue(subjectID)
             return
 
-        # no conflicts
-        # tentatively update subject attributes
+        # No conflicts, tentatively update subject attributes
         if not subjectID in tentativeSubjectCache:
             tentativeSubjectCache[subjectID] = {}
         for key, value in response.toUpdateSubjectMap.items():
@@ -193,14 +211,17 @@ class Coordinator(process):
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK', response),
              to=coordinators[id])
 
-    # resource coordinator instance, checks resource attribute conflicts
-    # receive from subject coordinator
-    # send to subject coordinator
+
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK', response)):
+        '''
+            Resource coordinator instance, checks resource attribute conflicts.
+            Receives and send to subject coordinator
+        '''
         logger.info("Resource Coordinator: Received the following response "
                     "from Subject Coordinator to check for resource attribute "
                     "conflicts: %s", response)
-        # check for conflict
+        
+        # Check for resource conflict
         conflictHappened = False
         resourceID = response.dbresponse.request.resourceID
 
@@ -217,6 +238,8 @@ class Coordinator(process):
         if not resourceID in resourceCache:
             resourceCache[resourceID] = {}
         for key, _ in response.dbresponse.readDbResourceMap.items():
+            # If key is read from DB but some one else had already put
+            #     this in the main resource cache then conflict
             if key in resourceCache[resourceID]:
                 logger.info("Resource Coordinator: Conflict Happened: "
                             "The attribute %s read from database for "
@@ -228,6 +251,8 @@ class Coordinator(process):
 
         if not conflictHappened:
             for key, value in response.readResourceAttributeMap.items():
+                # If the timestamp for this key from this request is not the
+                #    same as the one from cache read by this request, then conflict
                 if key in resourceCache[resourceID]:
                     if value[1] != resourceCache[resourceID][key][1]:
                         logger.info("Resource Coordinator: Conflict Happened: "
@@ -247,6 +272,7 @@ class Coordinator(process):
                     break
 
         if not conflictHappened:
+            # If no conflict then push the resource cache to DB
             dbCommitMap = {}
             if not resourceID in resourceCache:
                 resourceCache[resourceID] = {}
@@ -266,20 +292,23 @@ class Coordinator(process):
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
               (response, conflictHappened)), to=coordinators[id])
 
-    # subject coordinator instance
-    # receive from resource coordinator
-    # send to client, if no conflict happened
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK_RESPONSE',
                      (response, conflictHappened))):
+        '''
+            Subject coordinator instance, receives from resource coordinator
+            and sends to client, if no conflict happened  
+        '''
         logger.info("Subject Coordinator: Received following response from "
                     "Resource Coordinator with:\n\t'conflict in resource "
                     "attributes happened = %s\'\n%s", str(conflictHappened),
                     response)
+
         subjectID = response.dbresponse.request.subjectID
         resourceID = response.dbresponse.request.resourceID
         action = response.dbresponse.request.action
 
         if conflictHappened:
+            # Empty tentative cache
             id = int(subjectID) % len(coordinators)
             tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
@@ -291,15 +320,16 @@ class Coordinator(process):
             send(('CLIENT', subjectID, resourceID, action,
                   response.dbresponse.request.fromClient), to=coordinators[id])
         else:
+            # If no conflict then push the main subject cache to DB
             dbCommitMap = {}
             if not subjectID in mainSubjectCache:
                 mainSubjectCache[subjectID] = {}
             for key, val in tentativeSubjectCache[subjectID].items():
                 mainSubjectCache[subjectID][key] = val
 
-            self.tentativeSubjectCache = {}
+            # Empty tentative subject cache
+            self.tentativeSubjectCache[subjectID] = {}
             requestQueue[subjectID].popleft()
-            # output('sending response to client - success')
             logger.info("Subject Coordinator: Sending success result to Client:"
                         "\n\tEvaluation Result = Allow"
                         "\n\tSubject ID = %s"
@@ -316,12 +346,12 @@ class Coordinator(process):
 
         checkResponseQueue(subjectID)
 
-        # subject coordinator instance
-
-    # receive from client
-    # send to resource coordinator
     def receive(msg=('CLIENT', subjectID, resourceID, action, clientRestartReq),
                 from_=clientReq):
+        '''
+            Subject coordinator instance, receives from client and sends to
+            resource coordinator. It also sends the tentative cache.
+        '''
         logger.info("Subject Coordinator: Received request with following "
                     "parameters from Client:"
                     "\n\tSubject ID = %s\n\tResource ID = %s\n\tAction = %s",
@@ -357,7 +387,7 @@ class Coordinator(process):
         except:
             pass
 
-        # frame request and forward to Resource coordinator
+        # Frame request and forward to Resource coordinator
         request = Request(requestID, clientReq, subjectID, resourceID,
                           action, subjectAttributeMap, {})
         logger.info("Subject Coordinator: Sending the following parameters "

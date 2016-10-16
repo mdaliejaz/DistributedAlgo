@@ -10,11 +10,11 @@ import time
 
 
 class Client(process):
-    '''
-        Client setup. Generates a sequence of request and puts into a 
-        queue.
-    '''
     def setup(coordinators, config, num):
+        '''
+            Client setup. Generates a sequence of request and puts into a
+            queue.
+        '''
         self.logger = logging.getLogger('Log.' + __name__)
         self.size = len(coordinators)
         self.requestQueue = queue.Queue()
