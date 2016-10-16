@@ -39,6 +39,14 @@
         <resourceUpdate viewCount="++"></resourceUpdate>
     </rule>
 
+    <rule name="stress test for 1000 access">
+        <subjectCondition position="viewer"></subjectCondition>
+        <resourceCondition type="movie"
+                           viewCount="&lt;1000"></resourceCondition>
+        <action name="stressTest"></action>
+        <resourceUpdate viewCount="++"></resourceUpdate>
+    </rule>
+
     <rule name="listeners collectively can listen a song at most 5 times">
         <subjectCondition position="listener"></subjectCondition>
         <resourceCondition type="song" viewCount="&lt;5"></resourceCondition>

@@ -308,3 +308,95 @@
 
     Servicing order of Requests can be seen on console and also by grep in
     log with 'Request Queue Demo:'
+
+
+7.  Stress Test
+
+    Config File:    stressTest.ini
+    Log File:       stressTest.log
+
+    Description:
+    Scenario:   Lots of different requests are generated
+                Number of Clients:          10
+                Number of requests sent:    1100
+                Request:                    1   (>1000 requests)
+                    Subject Attributes:         position="viewer"
+                    Resource Attributes:        type="movie"
+                                                        viewCount="&lt;1000"
+                    Action:                     name="stressTest"
+                Request:                    2
+                    Subject Attributes:         position="employee" history=""
+                    Resource Attributes:        id="bank A"
+                    Action:                     name="read"
+                Request:                    2
+                    Subject Attributes:         position="employee"
+                                                        history="$resource.id"
+                    Resource Attributes:        id="bank A"
+                    Action:                     name="read"
+                Request:                    2
+                    Subject Attributes:         position="listener"
+                    Resource Attributes:        type="song" viewCount="&lt;5"
+                    Action:                     name="view"
+                There should be a total of 1100 responses sent to Client
+    There are more than 1000 requests of Request type 1. The value in final
+    DB snapshot should reflect viewCount to be 1000.
+
+    Artificial Delays inserted:
+    None
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 1033   (grep on log: "Allow access")
+    Number of denied accesses:    67   (grep on log: "Deny access")
+    Total number of accesses:   1100   (= Total number of sent requests)
+
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes = {'1111': {'position': 'employee',
+                                                'history': ''},
+                                  '3333': {'position': 'listener'},
+                                  '2222': {'position': 'viewer'}}
+            Resource Attributes = {'999': {'id': 'bank A'},
+                                   '666': {'movie': 'StarWars'},
+                                   '777': {'viewCount': '0', 'type': 'song'},
+                                   '888': {'viewCount': '0', 'type': 'movie'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes = {'1111': {'position': 'employee',
+	                                            'history': 'bank A'},
+                                  '3333': {'position': 'listener'},
+                                  '2222': {'position': 'viewer'}}
+            Resource Attributes = {'999': {'id': 'bank A'},
+                                   '666': {'movie': 'StarWars'},
+                                   '777': {'viewCount': '5', 'type': 'song'},
+                                   '888': {'viewCount': '1000', 'type': 'movie'}}
+
+    The final viewCount confirms that all the requests got serviced.
+    The final viewCount on movie confirms that the >=1000 requests on movie
+    were served.
+
+
+8.  Generation of random sequence of Requests
+
+    The previous test scenario 7 uses random sequence generator to generate
+    >=1000 requests on movies and we see that those many requests are generated.
+    So this test scenario is covered by test scenario 7.
+
+
+9.  Database min/max Latency
+
+    All the previous test have been implemented with minDbLatency = 1 and
+    maxDbLatency = 5. A random value between the two is generated and
+    considered as the latency.
+
+    This can be seen by grep on any of the logs from previous test scenarios.
+    The latency would be equal to the time difference between the following
+    two greps:
+    1.  Subject Coordinator: Sending message to DB to commit the updated
+                                                            subject attributes
+        OR
+        Resource Coordinator: Sending message to DB to commit the updated
+                                                            resource attributes
+    AND
+    2.  Successfully updated database for subject attributes with map
+        OR
+        Successfully updated database for resource attributes with map
