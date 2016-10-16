@@ -34,8 +34,8 @@
     <rule name="viewers collectively can view each movie at most 2 times">
         <subjectCondition position="viewer"></subjectCondition>
         <resourceCondition type="movie"
-                           viewCount="&lt;4"></resourceCondition>
-        <action name="view1"></action>
+                           viewCount="&lt;2"></resourceCondition>
+        <action name="view"></action>
         <resourceUpdate viewCount="++"></resourceUpdate>
     </rule>
 
@@ -49,7 +49,7 @@
     <rule name="Tom can watch Star Wars max 2 times">
         <subjectCondition name="Tom" viewCount="&lt;2"></subjectCondition>
         <resourceCondition movie="StarWars"></resourceCondition>
-        <action name="view"></action>
+        <action name="viewOnSubject"></action>
         <subjectUpdate viewCount="++"></subjectUpdate>
     </rule>
 
