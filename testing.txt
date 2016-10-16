@@ -400,3 +400,12 @@
     2.  Successfully updated database for subject attributes with map
         OR
         Successfully updated database for resource attributes with map
+
+
+10. Graceful shutdown of the application
+
+    From all the above test cases it could be confirmed that the application
+    shuts down gracefully. After the execution in all the Client processes
+    finish, they join in the master process. Once all the Client processes
+    join, the master process sends a done signal to other processes leading
+    to a graceful shutdown.
