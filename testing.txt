@@ -1,1 +1,40 @@
-testing.txt description of testcases
+                              Test Cases
+                            =============
+
+1.  Request Evaluation aborts due to conflict in Subject Attribute
+
+    Config File:    subjectConflict.ini
+    Log File:       subjectConflict.log
+
+    Description:
+    Scenario:   Tom can watch Star Wars max two times
+                Number of Clients:          2
+                Number of requests sent:    2 (per client)
+                Subject Attributes:         name="Tom" viewCount="&lt;2"
+                Resource Attributes:        type="movie"
+                Action:                     name="view"
+                Two requests should be allowed
+                Two requests should be denied
+    Two clients with same subject and resource ID for same action send two
+    requests each. All these requests try to update the same subject attribute
+    resulting in a conflict and hence a restart due to conflict in Subject
+    Attribute.
+
+    Artificial Delays inserted:
+    None
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 2   (grep on log: "Allow access")
+    Number of denied accesses:  2   (grep on log: "Deny access")
+    Number of conflicts:        2   (grep on log: "Subject Coordinator:
+                                                            Conflict Happened:")
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes = {'4444': {'viewCount': '0', 'name': 'Tom'}}
+	        Resource Attributes = {'666': {'movie': 'StarWars'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes = {'4444': {'viewCount': '2', 'name': 'Tom'}}
+	        Resource Attributes = {'666': {'movie': 'StarWars'}}
+
+

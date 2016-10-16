@@ -48,8 +48,8 @@
 
     <rule name="Tom can watch Star Wars max 2 times">
         <subjectCondition name="Tom" viewCount="&lt;2"></subjectCondition>
-        <resourceCondition type="movie"></resourceCondition>
-        <action name="view2"></action>
+        <resourceCondition movie="StarWars"></resourceCondition>
+        <action name="view"></action>
         <subjectUpdate viewCount="++"></subjectUpdate>
     </rule>
 
