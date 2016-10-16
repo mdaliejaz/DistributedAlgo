@@ -11,9 +11,12 @@ import time
 
 
 def main():
+    # Read config file and parse it
     config = configparser.ConfigParser()
     configFile = str(sys.argv[1])
     config.read(configFile)
+    
+    # Initalize loggers
     logConfFile = str(config.get("setup", "logConfFile"))
     logging.config.fileConfig(logConfFile, defaults={
         'logfilename': str(config.get("setup", "logFile"))})
@@ -37,6 +40,7 @@ def main():
     listcoord = list(coordinators)
     setup(dbInstance, (config,))
     setup(coordinators, (listcoord, dbInstance, config))
+    # Setup each of the clients
     num = 1
     for client in clients:
         setup(client, (listcoord, config, num))
@@ -46,8 +50,10 @@ def main():
     start(coordinators)
     start(clients)
 
+    # wait for all clients to complete
     for c in clients: c.join()
     logger.info("All processes completed. Terminating...")
     print("All processes completed. Terminating...")
+    # Sleep for maxdb latency to allow db commits to finish
     time.sleep(int(config.get("setup", "maxDbLatency")) + 1)
     da.send(('done',), to=(dbInstance | coordinators))

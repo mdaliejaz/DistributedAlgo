@@ -82,3 +82,7 @@
   and easy to understand. Modules for each functionality is seperate and there
   is no code duplication. Proper and consistent coding conventions follow throughout.
 
+  REFERENCE:
+
+  --> Dist Algo decumentation
+  --> For logging: http://stackoverflow.com/questions/13649664/how-to-use-logging-with-pythons-fileconfig-and-configure-the-logfile-filename

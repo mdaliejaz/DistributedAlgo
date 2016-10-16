@@ -10,6 +10,10 @@ import time
 
 
 class Client(process):
+    '''
+        Client setup. Generates a sequence of request and puts into a 
+        queue.
+    '''
     def setup(coordinators, config, num):
         self.logger = logging.getLogger('Log.' + __name__)
         self.size = len(coordinators)
@@ -27,11 +31,14 @@ class Client(process):
             requestQueue.put([int(config.get(seq, "subjectID")),
                               int(config.get(seq, "resourceID")),
                               config.get(seq, "action")])
-        # Hack to mark the end of queue.
-        # Library methods are not working for some reason
+        # Mark the end of queue
         requestQueue.put(None)
 
     def getRandomsequenceList(config, client):
+        '''
+            If sequence is defined as random in config file then
+            generate the random sequence using the seed given
+        '''
         numReq = int(config.get(client, "numReq"))
         requestList = config.get(client, "requestList").split(',')
         random.seed(int(config.get(client, "seed")))
@@ -44,15 +51,6 @@ class Client(process):
         return sequenceList
 
     def sendToSubjectCoordinator():
-        # Implementation 1 - didn't work
-        # if self.requestQueue.empty():
-        #     self.exit = True
-
-        # Implementation 2 - didn't work
-        # try:
-        #     elem = self.requestQueue.get()
-        # except queue.Empty():
-        #     self.exit = True
 
         # Hack to generate tentative cache conflict
         try:

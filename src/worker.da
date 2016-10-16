@@ -10,6 +10,9 @@ import time
 
 
 class Worker(process):
+    '''
+        Setup up the worker by reading policy file
+    '''
     def setup(coordinators, dbInstance, config):
         self.logger = logging.getLogger('Log.' + __name__)
         self.coordinators = coordinators
@@ -19,13 +22,14 @@ class Worker(process):
         readPolicy(self.policyFile)
 
     def receive(msg=('WORKER_ASSIGN', request)):
-        # policy evaluation
         logger.info("Received message from coordinator for Request:"
                     "\n\tSubject ID: %d"
                     "\n\tResource ID: %d"
                     "\n\tAction: %s}",
                     request.subjectID, request.subjectID, request.action)
-        # Printing for responseQueue.ini
+        '''
+            Logging for response queue delay
+        '''
         try:
             config.get("setup", "responseQueueDelay")
             logger.info("Request Queue Demo: Request %s received in "
@@ -42,7 +46,11 @@ class Worker(process):
                 time.sleep(1)
         except:
             pass
-        # For all the rules associated for that action
+        
+        '''
+            Update the sets in the request objects for the union of common
+            attributes across all policy rules for that action.
+        '''
         for rule in policyMap[request.action]:
             for k in rule.subjectCondition.keys():
                 request.requiredSubjAtrribs.add(k)
@@ -53,6 +61,10 @@ class Worker(process):
         send(('GET_FROM_DB', request), to=dbInstance)
 
     def conditionSatisfied(policyValue, mapValue):
+        '''
+            Check if policy condition is satisfied. Handles cases
+            for <, > and simple strings
+        '''
         if ((len(policyValue) > 0 and len(mapValue) > 0) and
                 (policyValue[0] == ">" or policyValue[0] == "<")):
             try:
@@ -69,6 +81,11 @@ class Worker(process):
 
     def validateRule(conditions, attribMap, attribSet, subjAttribReqd,
                      resourceAttribReqd):
+        '''
+            Validates a policy rule. The subject and resource attribute
+            maps are needed to handle the '$' scenario. In such a cases
+            we replace the $ atrribute with the value present in maps.
+        '''
         for k in conditions.keys():
             attribSet.add(k)
             policyVal = conditions[k]
@@ -81,6 +98,10 @@ class Worker(process):
         return True
 
     def checkDollar(value, subjAttribReqd, resourceAttribReqd):
+        '''
+            Check for $ in attribute value and perform the required
+            substitution. Return None if no $ is present in attribute value.
+        '''
         if (value.startswith('$')):
             instance, attrib = value.split('.')
             instance = instance[1:]
@@ -93,6 +114,10 @@ class Worker(process):
 
     def getUpdatedMaps(ruleUpdate, attribMap, subjAttribReqd,
                        resourceAttribReqd):
+        '''
+            Updates attributes handling cases including ++, --.
+            Returns a map of updated attributes and their values.
+        '''
         updateMap = {}
         if (ruleUpdate == None):
             return updateMap
@@ -110,6 +135,10 @@ class Worker(process):
         return updateMap
 
     def mergeMaps(dbMap, inputMap):
+        '''
+            Given dbMap (with timestamps) and inputMap (cache)
+            with timestamps, merge the 2 and return an unified map.
+        '''
         result = {}
         for k, v in dbMap.items():
             result[k] = v
@@ -118,6 +147,10 @@ class Worker(process):
         return result
 
     def receive(msg=('DB_RESPONSE', dbresponse)):
+        '''
+            Receives response from DB, validates rules and send updated
+            attributes to subject co-ordinator.
+        '''
         logger.info("Received following DB response:%s", dbresponse)
         subjAttribReqd = mergeMaps(dbresponse.readDbSubjectMap,
                                    dbresponse.request.subjectAttributeMap)
@@ -179,16 +212,22 @@ class Worker(process):
         logger.info("Sending following Worker Response to Subject "
                     "Coordinator:%s", response)
         id = int(dbresponse.request.subjectID) % self.size
+        # send response back to subject co-ordinator
         send(('WORKER_RESPONSE', response), to=(coordinators[id]))
 
     def run():
         logger.info("Started worker to evaluate policy in file: %s",
                     self.policyFile)
-        # can we print the map in a better way!
+        # Can we print the map in a better way!
         logger.debug("Content of Policy File: %s", self.policyMap)
+        # Wait till "done" is received to kill gracefully.
         await(received(('done',)))
 
     def readPolicy(policyFile):
+        '''
+            Reads the policy XML file and stores it in memory (map)
+            This code is the same as what policy.py provided to us.
+        '''
         root = ET.parse(policyFile).getroot()
 
         for rule in root.iter('rule'):

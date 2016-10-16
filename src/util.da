@@ -1,6 +1,9 @@
 class Request(object):
     def __init__(self, requestID, client, subjectID, resourceID, action,
                  subjectAttributeMap, resourceAttributeMap):
+        '''
+            Request class.
+        '''
         self.requestID = requestID
         self.fromClient = client
         self.subjectID = subjectID
@@ -9,6 +12,7 @@ class Request(object):
         # Tentative attribute maps
         self.subjectAttributeMap = subjectAttributeMap
         self.resourceAttributeMap = resourceAttributeMap
+        # sets to hold common attributes across all rules for a given action
         self.requiredSubjAtrribs = set()
         self.requiredResourceAtrribs = set()
 
@@ -22,6 +26,10 @@ class Request(object):
 
 
 class DBResponse(object):
+    '''
+        DB response class which hold the response which the DB
+        sends back to the worker.
+    '''
     def __init__(self, request, evaluation, readDbSubjectMap,
                  readDbResourceMap):
         self.request = request
@@ -40,11 +48,17 @@ class DBResponse(object):
 
 
 class Response(object):
+    '''
+        Response class which holds the db response and the toUpdate
+        attribute maps. It also contains the maps of attributes to
+        evaluate the policy
+    '''
     def __init__(self, dbresponse, toUpdateSubjectMap, toUpdateResourceMap,
                  readSubjectAttributeMap, readResourceAttributeMap):
         self.dbresponse = dbresponse
         # These maps are different from the ones in DB response
-        # These maps store the updated attributes only
+        # These maps store the updated attributes only needed
+        #     to evaluate policy
         self.toUpdateSubjectMap = toUpdateSubjectMap
         self.toUpdateResourceMap = toUpdateResourceMap
         self.readSubjectAttributeMap = readSubjectAttributeMap
@@ -61,6 +75,10 @@ class Response(object):
 
 
 class PolicyRule(object):
+    '''
+        Class to store each policy rule. Contains 4 maps which are self
+        explnatory.
+    '''
     def __init__(self, subjectCondition, resourceCondition, subjectUpdate,
                  resourceUpdate):
         self.subjectCondition = subjectCondition
