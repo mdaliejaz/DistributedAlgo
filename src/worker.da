@@ -6,6 +6,7 @@ import logging.config
 import logging.handlers
 from util import PolicyRule
 from util import Response
+import time
 
 
 class Worker(process):
@@ -24,6 +25,23 @@ class Worker(process):
                     "\n\tResource ID: %d"
                     "\n\tAction: %s}",
                     request.subjectID, request.subjectID, request.action)
+        # Printing for responseQueue.ini
+        try:
+            config.get("setup", "responseQueueDelay")
+            logger.info("Request Queue Demo: Request %s received in "
+                       "Worker",
+                       request.requestID)
+            print("Request ", request.requestID, " received in Worker")
+            if (request.subjectID == 1111) and (
+                        request.resourceID == 999) and (
+                        request.action == "view"):
+                print("Added worker delay to request ", request.requestID)
+                logger.info(
+                    "Request Queue Demo: Added worker delay to request %s",
+                    request.requestID)
+                time.sleep(1)
+        except:
+            pass
         # For all the rules associated for that action
         for rule in policyMap[request.action]:
             for k in rule.subjectCondition.keys():

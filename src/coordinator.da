@@ -35,6 +35,15 @@ class Coordinator(process):
         # update request with resourceAttributeMap
         logger.info("Resource Coordinator: Received the following parameters "
                     "from Subject Coordinator:%s", request)
+        # Printing for responseQueue.ini
+        try:
+            config.get("setup", "responseQueueDelay")
+            logger.info("Request Queue Demo: Request %s received in Resource "
+                        "Coordinator", request.requestID)
+            print("Request {} received in Resource "
+                  "Coordinator".format(request.requestID))
+        except:
+            pass
         if request.resourceID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
@@ -55,8 +64,27 @@ class Coordinator(process):
         requestID = response.dbresponse.request.requestID
         subjectID = response.dbresponse.request.subjectID
 
+        # Printing for responseQueue.ini
+        try:
+            config.get("setup", "responseQueueDelay")
+            logger.info("Request queue Demo: Response from Worker for "
+                        "Request %s received in Subject Coordinator",
+                        requestID)
+            print("Response from Worker for Request ",
+                  requestID, " received in Subject Coordinator")
+        except:
+            pass
+
         if requestID != requestQueue[subjectID][0]:
             responseQueue[requestID] = response
+            # Printing for responseQueue.ini
+            try:
+                config.get("setup", "responseQueueDelay")
+                logger.info("Request queue Demo: Waiting for "
+                            "previous response to be serviced")
+                print("Waiting for previous response to be serviced")
+            except:
+                pass
             return
 
         checkConflicts(response)
@@ -74,6 +102,17 @@ class Coordinator(process):
         fromClient = response.dbresponse.request.fromClient
         resourceID = response.dbresponse.request.resourceID
         action = response.dbresponse.request.action
+
+        # Printing for responseQueue.ini
+        try:
+            config.get("setup", "responseQueueDelay")
+            logger.info("Request queue Demo: Servicing response "
+                        "for request %s",
+                        response.dbresponse.request.requestID)
+            print("Servicing response for request ",
+                  response.dbresponse.request.requestID)
+        except:
+            pass
 
         # send result if evaluation is false
         if not response.dbresponse.evaluation:
@@ -167,11 +206,11 @@ class Coordinator(process):
 
         # Hack to generate tentative cache conflict
         try:
-            if config.get("setup", "addCacheConflictDelay") == "True":
-                if (response.dbresponse.request.subjectID == 4444) and (
+            config.get("setup", "addCacheConflictDelay")
+            if (response.dbresponse.request.subjectID == 4444) and (
                         response.dbresponse.request.resourceID == 888) and (
                         response.dbresponse.request.action == "conflict2"):
-                    time.sleep(1)
+                time.sleep(1)
         except:
             pass
 
@@ -198,7 +237,7 @@ class Coordinator(process):
                                     key)
                         conflictHappened = True
                         break
-                else:   # not required, but just in case
+                else:  # not required, but just in case
                     conflictHappened = True
                     logger.info("Resource Coordinator: Conflict Happened: "
                                 "The attribute %s read from resource "
@@ -307,6 +346,16 @@ class Coordinator(process):
             for key, val in mainSubjectCache[subjectID].items():
                 if not key in subjectAttributeMap:
                     subjectAttributeMap[key] = val
+
+        # Printing for responseQueue.ini
+        try:
+            config.get("setup", "responseQueueDelay")
+            logger.info("Request Queue Demo: Request %s received in "
+                        "Subject Coordinator",
+                        requestID)
+            print("Request ", requestID, " received in Subject Coordinator")
+        except:
+            pass
 
         # frame request and forward to Resource coordinator
         request = Request(requestID, clientReq, subjectID, resourceID,
