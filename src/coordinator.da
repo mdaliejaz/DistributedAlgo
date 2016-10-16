@@ -54,10 +54,6 @@ class Coordinator(process):
                     "from Worker:%s", response)
         requestID = response.dbresponse.request.requestID
         subjectID = response.dbresponse.request.subjectID
-        resourceID = response.dbresponse.request.resourceID
-
-        # output('WORKER_RESPONSE, subjectID=' + str(subjectID) +
-        #        ', resource=' + str(resourceID))
 
         if requestID != requestQueue[subjectID][0]:
             responseQueue[requestID] = response
@@ -96,7 +92,8 @@ class Coordinator(process):
         # check for conflict
         conflictHappened = False
         for key, _ in response.dbresponse.readDbSubjectMap.items():
-            if key in tentativeSubjectCache or key in mainSubjectCache:
+            if (subjectID in mainSubjectCache) and (
+                        key in mainSubjectCache[subjectID]):
                 logger.info("Subject Coordinator: Conflict Happened: "
                             "The attribute %s read from database for "
                             "Request ID = %s, was updated by a previous "
@@ -107,8 +104,9 @@ class Coordinator(process):
 
         if not conflictHappened:
             for key, value in response.readSubjectAttributeMap.items():
-                if key in mainSubjectCache:
-                    if value[1] != mainSubjectCache[key][1]:
+                if (subjectID in mainSubjectCache) and (
+                            key in mainSubjectCache[subjectID]):
+                    if value[1] != mainSubjectCache[subjectID][key][1]:
                         logger.info("Subject Coordinator: Conflict Happened: "
                                     "The attribute %s read from tentative cache "
                                     "for this request happened to be updated by "
@@ -297,5 +295,3 @@ class Coordinator(process):
                     self.nworkerspercoord)
         await(received(('done',)))
         da.send(('done',), to=(self.workers))
-        # for w in self.workers: w.join()
-        output("terminating coordinator...")
