@@ -38,4 +38,11 @@
         <resourceUpdate viewCount="++"></resourceUpdate>
     </rule>
 
+    <rule name="listeners collectively can listen a song at most 5 times">
+        <subjectCondition position="listener"></subjectCondition>
+        <resourceCondition type="song" viewCount="&lt;5"></resourceCondition>
+        <action name="view"></action>
+        <resourceUpdate viewCount="++"></resourceUpdate>
+    </rule>
+
 </policy>

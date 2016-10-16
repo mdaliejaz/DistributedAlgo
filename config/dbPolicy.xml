@@ -6,10 +6,16 @@
     <subject id="2222">
         <attribute position="viewer"/>
     </subject>
+    <subject id="3333">
+        <attribute position="listener"/>
+    </subject>
     <resource id="999">
         <attribute id="bank A"/>
     </resource>
     <resource id="888">
         <attribute type="movie" viewCount="0"/>
+    </resource>
+    <resource id="777">
+        <attribute type="song" viewCount="0"/>
     </resource>
 </data>
