@@ -6,6 +6,7 @@ import logging.config
 import logging.handlers
 import queue
 import random
+import time
 
 
 class Client(process):
@@ -52,6 +53,18 @@ class Client(process):
         #     elem = self.requestQueue.get()
         # except queue.Empty():
         #     self.exit = True
+
+        # Hack to generate tentative cache conflict
+        try:
+            if config.get("setup", "addCacheConflictDelay") == "True":
+                if self.num == 1:
+                    pass
+                elif self.num == 2:
+                    time.sleep(0.01)
+                elif self.num == 3:
+                    time.sleep(0.1)
+        except:
+            pass
 
         elem = requestQueue.get()
         if (elem == None):

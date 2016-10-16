@@ -150,12 +150,22 @@ class Coordinator(process):
     # receive from subject coordinator
     # send to subject coordinator
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK', response)):
-        logger.info("Resource Coordinator: Received the foolowing response "
+        logger.info("Resource Coordinator: Received the following response "
                     "from Subject Coordinator to check for resource attribute "
                     "conflicts: %s", response)
         # check for conflict
         conflictHappened = False
         resourceID = response.dbresponse.request.resourceID
+
+        # Hack to generate tentative cache conflict
+        try:
+            if config.get("setup", "addCacheConflictDelay") == "True":
+                if (response.dbresponse.request.subjectID == 4444) and (
+                        response.dbresponse.request.resourceID == 888) and (
+                        response.dbresponse.request.action == "conflict2"):
+                    time.sleep(1)
+        except:
+            pass
 
         if not resourceID in resourceCache:
             resourceCache[resourceID] = {}
