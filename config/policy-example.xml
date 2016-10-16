@@ -53,7 +53,7 @@
         <subjectUpdate viewCount="++"></subjectUpdate>
     </rule>
 
-    <rule name="Both Subject and resource updates">
+    <rule name="Only resource updates">
         <subjectCondition name="Tom" viewCount="&lt;4"></subjectCondition>
         <resourceCondition type="movie"
                            viewCount="&lt;4"></resourceCondition>
@@ -70,7 +70,7 @@
         <resourceUpdate viewCount="++"></resourceUpdate>
     </rule>
 
-    <rule name="Both Subject and resource updates">
+    <rule name="Only Subject updates">
         <subjectCondition name="Tom" viewCount="&lt;4"></subjectCondition>
         <resourceCondition type="movie"
                            viewCount="&lt;4"></resourceCondition>

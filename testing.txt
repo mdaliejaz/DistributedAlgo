@@ -10,11 +10,12 @@
     Scenario:   Tom can watch Star Wars max two times
                 Number of Clients:          2
                 Number of requests sent:    2 (per client)
-                Subject Attributes:         name="Tom" viewCount="&lt;2"
-                Resource Attributes:        type="movie"
-                Action:                     name="viewOnSubject"
-                Two requests should be allowed
-                Two requests should be denied
+                Request:                    1 (same for all)
+                    Subject Attributes:         name="Tom" viewCount="&lt;2"
+                    Resource Attributes:        type="movie"
+                    Action:                     name="viewOnSubject"
+                Two requests should be allowed access
+                Two requests should be denied access
     Two clients with same subject and resource ID for same action send two
     requests each. All these requests try to update the same subject attribute
     resulting in a conflict and hence a restart due to conflict in Subject
@@ -31,10 +32,10 @@
                                                             Conflict Happened:")
     DB updated:
         Initial Snapshot    (part of DB relevant to this example)
-            Subject Attributes = {'4444': {'viewCount': '0', 'name': 'Tom'}}
+            Subject Attributes  = {'4444': {'viewCount': '0', 'name': 'Tom'}}
 	        Resource Attributes = {'666': {'movie': 'StarWars'}}
 	    Final Snapshot      (part of DB relevant to this example)
-	        Subject Attributes = {'4444': {'viewCount': '2', 'name': 'Tom'}}
+	        Subject Attributes  = {'4444': {'viewCount': '2', 'name': 'Tom'}}
 	        Resource Attributes = {'666': {'movie': 'StarWars'}}
 
 
@@ -47,11 +48,12 @@
     Scenario:   Tom can watch Star Wars max two times
                 Number of Clients:          2
                 Number of requests sent:    2 (per client)
-                Subject Attributes:         position="viewer"
-                Resource Attributes:        type="movie" viewCount="&lt;2"
-                Action:                     name="viewOnResource"
-                Two requests should be allowed
-                Two requests should be denied
+                Request:                    1 (same for all)
+                    Subject Attributes:         position="viewer"
+                    Resource Attributes:        type="movie" viewCount="&lt;2"
+                    Action:                     name="viewOnResource"
+                Two requests should be allowed access
+                Two requests should be denied access
     Two clients with same subject and resource ID for same action send two
     requests each. All these requests try to update the same resource attribute
     resulting in a conflict and hence a restart due to conflict in Resource
@@ -68,8 +70,82 @@
                                                             Conflict Happened:")
     DB updated:
         Initial Snapshot    (part of DB relevant to this example)
-            Subject Attributes = {'2222': {'position': 'viewer'}}
+            Subject Attributes  = {'2222': {'position': 'viewer'}}
 	        Resource Attributes = {'888': {'type': 'movie', 'viewCount': '0'}}
 	    Final Snapshot      (part of DB relevant to this example)
-	        Subject Attributes = {'2222': {'position': 'viewer'}}
+	        Subject Attributes  = {'2222': {'position': 'viewer'}}
 	        Resource Attributes = {'888': {'type': 'movie', 'viewCount': '2'}}
+
+
+3.  Request Evaluation aborts due to dependency on a tentative update
+
+    Config File:    tentativeCacheConflict.ini
+    Log File:       tentativeCacheConflict.log
+
+    Description:
+    Scenario:   Tom can watch Star Wars max two times
+                Number of Clients:          3
+                Number of requests sent:    1 (per client)
+                Request:                    1 (client 1)
+                    Subject Attributes:         name="Tom" viewCount="&lt;4"
+                    Resource Attributes:        type="movie" viewCount="&lt;4"
+                    Action:                     name="conflict1"
+                Request:                    2 (client 2)
+                    Subject Attributes:         name="Tom" viewCount="&lt;4"
+                    Resource Attributes:        type="movie" viewCount="&lt;4"
+                    Action:                     name="conflict2"
+                Request:                    3 (client 3)
+                    Subject Attributes:         name="Tom" viewCount="&lt;4"
+                    Resource Attributes:        type="movie" viewCount="&lt;4"
+                    Action:                     name="conflict3"
+                All requests should be allowed access
+    Request 1 from Client 1 updates only resource attribute. Request 2 which
+    arrives 0.01 sec after Request 1 updates both Resource and Subject
+    attributes. Since both Requests 1 and 2 try to insert a same Resource
+    Attribute in resource cache, Request 2 would have conflict and hence
+    would need to restart. Request 2's conflict check in Resource Coordinator
+    is delayed by a second to allow ample amount of time for Request 3 to
+    take tentative subject cache from Request 2's update. Request 3 which
+    arrives 0.1 sec after Request 1 takes the tentative cache from Request
+    2's response and goes for evaluation in Worker. Now since Request 2 is
+    restarted due to conflict in Resource Attribute, the tentative cache that
+    Request 3 took is no longer valid. Hence when Request 3's response comes
+    to Subject Coordinator, it is restarted due to conflict in tentative cache.
+
+    Artificial Delays inserted:
+    Yes.
+    A flag 'addCacheConflictDelay' is used to delay Request 2 by 0.01 second
+    and Request 3 by 0.1 second to ensure that these requests go in order we
+    want the test scenario to expect. Also, this flag is used to add extra
+    computation time in Resource Coordinator conflict check for Request 2, to
+    ensure tentative cache conflict happens with Request 3.
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 3   (grep on log: "Allow access")
+    Number of denied accesses:  0   (grep on log: "Deny access")
+    Number of conflicts:        3   (grep on log: "Conflict Happened")
+        1.  Subject Coordinator: Conflict Happened: The attribute viewCount
+            read from tentative subject cache for this request happened to be
+            reverted by a previous request
+        2.  Subject Coordinator: Conflict Happened: The attribute viewCount
+            read from database for Request ID =
+            ae52a4f3-bc2d-4ae1-9fec-ca98a90c0757, was updated by a previous
+            request
+        3.  Resource Coordinator: Conflict Happened: The attribute viewCount
+            read from database for Request ID =
+            ff2882ab-ea1a-4d88-a96f-9171d6e51e6a, was updated by a previous
+            request
+        The conflict number 1 listed above is the conflict generated with
+        this scenario.
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes  = {'4444': {'viewCount': '0', 'name': 'Tom'}}
+	        Resource Attributes = {'888': {'viewCount': '0', 'type': 'movie'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes  = {'4444': {'viewCount': '2', 'name': 'Tom'}}
+	        Resource Attributes = {'888': {'viewCount': '2', 'type': 'movie'}}
+
+    # Note: We get this scenario most of the time in Subject Attribute conflict
+            listed in test scenario 1. But it's not guaranteed to happen in
+            scenario 1.
