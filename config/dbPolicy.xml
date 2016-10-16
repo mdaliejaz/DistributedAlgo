@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
 <data>
-    <subject id="11101">
-        <attribute position= "employee" history=""/>
+    <subject id="1111">
+        <attribute position="employee" history=""/>
     </subject>
-    <subject id="11102">
-        <attribute position= "customer"/>
+    <subject id="2222">
+        <attribute position="viewer"/>
     </subject>
-    <resource id="44401">
-        <attribute id= "bank A"/>
+    <resource id="999">
+        <attribute id="bank A"/>
     </resource>
-    <resource id="44402">
-        <attribute type= "movie" viewCount="0"/>
+    <resource id="888">
+        <attribute type="movie" viewCount="0"/>
     </resource>
 </data>
