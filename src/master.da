@@ -15,7 +15,7 @@ def main():
     config = configparser.ConfigParser()
     configFile = str(sys.argv[1])
     config.read(configFile)
-    
+
     # Initalize loggers
     logConfFile = str(config.get("setup", "logConfFile"))
     logging.config.fileConfig(logConfFile, defaults={

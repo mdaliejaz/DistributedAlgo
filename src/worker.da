@@ -13,6 +13,7 @@ class Worker(process):
     '''
         Setup up the worker by reading policy file
     '''
+
     def setup(coordinators, dbInstance, config):
         self.logger = logging.getLogger('Log.' + __name__)
         self.coordinators = coordinators
@@ -33,8 +34,8 @@ class Worker(process):
         try:
             config.get("setup", "responseQueueDelay")
             logger.info("Request Queue Demo: Request %s received in "
-                       "Worker",
-                       request.requestID)
+                        "Worker",
+                        request.requestID)
             print("Request ", request.requestID, " received in Worker")
             if (request.subjectID == 1111) and (
                         request.resourceID == 999) and (
@@ -46,7 +47,7 @@ class Worker(process):
                 time.sleep(1)
         except:
             pass
-        
+
         '''
             Update the sets in the request objects for the union of common
             attributes across all policy rules for that action.

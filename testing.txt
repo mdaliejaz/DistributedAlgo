@@ -328,12 +328,12 @@
                     Subject Attributes:         position="employee" history=""
                     Resource Attributes:        id="bank A"
                     Action:                     name="read"
-                Request:                    2
+                Request:                    3
                     Subject Attributes:         position="employee"
                                                         history="$resource.id"
                     Resource Attributes:        id="bank A"
                     Action:                     name="read"
-                Request:                    2
+                Request:                    4
                     Subject Attributes:         position="listener"
                     Resource Attributes:        type="song" viewCount="&lt;5"
                     Action:                     name="view"

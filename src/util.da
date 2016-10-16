@@ -30,6 +30,7 @@ class DBResponse(object):
         DB response class which hold the response which the DB
         sends back to the worker.
     '''
+
     def __init__(self, request, evaluation, readDbSubjectMap,
                  readDbResourceMap):
         self.request = request
@@ -53,6 +54,7 @@ class Response(object):
         attribute maps. It also contains the maps of attributes to
         evaluate the policy
     '''
+
     def __init__(self, dbresponse, toUpdateSubjectMap, toUpdateResourceMap,
                  readSubjectAttributeMap, readResourceAttributeMap):
         self.dbresponse = dbresponse
@@ -79,6 +81,7 @@ class PolicyRule(object):
         Class to store each policy rule. Contains 4 maps which are self
         explnatory.
     '''
+
     def __init__(self, subjectCondition, resourceCondition, subjectUpdate,
                  resourceUpdate):
         self.subjectCondition = subjectCondition

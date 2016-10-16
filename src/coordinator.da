@@ -39,7 +39,7 @@ class Coordinator(process):
         '''
         logger.info("Resource Coordinator: Received the following parameters "
                     "from Subject Coordinator:%s", request)
-        
+
         # Printing for responseQueue.ini
         try:
             config.get("setup", "responseQueueDelay")
@@ -49,7 +49,7 @@ class Coordinator(process):
                   "Coordinator".format(request.requestID))
         except:
             pass
-        
+
         if request.resourceID in resourceCache:
             request.resourceAttributeMap = resourceCache[request.resourceID]
         else:
@@ -60,7 +60,6 @@ class Coordinator(process):
                     "to Worker:%s", request)
         workerSequence = (workerSequence + 1) % len(workerList)
         send(('WORKER_ASSIGN', request), to=workerList[workerSequence])
-
 
     def receive(msg=('WORKER_RESPONSE', response)):
         '''
@@ -211,7 +210,6 @@ class Coordinator(process):
         send(('RESOURCE_COORDINATOR_CONFLICT_CHECK', response),
              to=coordinators[id])
 
-
     def receive(msg=('RESOURCE_COORDINATOR_CONFLICT_CHECK', response)):
         '''
             Resource coordinator instance, checks resource attribute conflicts.
@@ -220,7 +218,7 @@ class Coordinator(process):
         logger.info("Resource Coordinator: Received the following response "
                     "from Subject Coordinator to check for resource attribute "
                     "conflicts: %s", response)
-        
+
         # Check for resource conflict
         conflictHappened = False
         resourceID = response.dbresponse.request.resourceID
