@@ -97,3 +97,7 @@ class Database(process):
                     "\n\tSubject Attributes = %s"
                     "\n\tResource Attributes = %s", subjectMap, resourceMap)
         await(received(('done',)))
+        logger.info("Dumping final contents of DB:"
+                    "\n\tSubject Attributes = %s"
+                    "\n\tResource Attributes = %s", self.subjectMap,
+                    self.resourceMap)
