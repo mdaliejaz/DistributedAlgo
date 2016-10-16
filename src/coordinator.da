@@ -108,11 +108,19 @@ class Coordinator(process):
                             key in mainSubjectCache[subjectID]):
                     if value[1] != mainSubjectCache[subjectID][key][1]:
                         logger.info("Subject Coordinator: Conflict Happened: "
-                                    "The attribute %s read from tentative cache "
-                                    "for this request happened to be updated by "
-                                    "some other previous request", key)
+                                    "The attribute %s read from tentative cache"
+                                    " for this request happened to be updated "
+                                    "by some other previous request", key)
                         conflictHappened = True
                         break
+                else:
+                    conflictHappened = True
+                    logger.info("Subject Coordinator: Conflict Happened: "
+                                "The attribute %s read from tentative subject "
+                                "cache for this request happened to be "
+                                "reverted by a previous request",
+                                key)
+                    break
 
         if conflictHappened:
             # conflict happened, restart
@@ -190,6 +198,14 @@ class Coordinator(process):
                                     key)
                         conflictHappened = True
                         break
+                else:   # not required, but just in case
+                    conflictHappened = True
+                    logger.info("Resource Coordinator: Conflict Happened: "
+                                "The attribute %s read from resource "
+                                "cache for this request happened to be "
+                                "reverted by a previous request",
+                                key)
+                    break
 
         if not conflictHappened:
             dbCommitMap = {}
