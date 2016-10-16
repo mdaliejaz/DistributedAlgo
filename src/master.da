@@ -7,6 +7,7 @@ import logging.handlers
 import coordinator as coord
 import database as db
 import client as cl
+import time
 
 
 def main():
@@ -48,4 +49,5 @@ def main():
     for c in clients: c.join()
     logger.info("All processes completed. Terminating...")
     print("All processes completed. Terminating...")
+    time.sleep(int(config.get("setup", "maxDbLatency")) + 1)
     da.send(('done',), to=(dbInstance | coordinators))
