@@ -1,121 +1,111 @@
-2016-10-16 14:24:35.171 - Log.master - INFO - Starting the DistAlgo Project with config file: ../config/responseQueue.ini
-2016-10-16 14:24:35.237 - Log.master - INFO - Number of coordinators = 3
-2016-10-16 14:24:35.237 - Log.master - INFO - Number of clients = 2
-2016-10-16 14:24:35.238 - Log.master - INFO - Number of workers per coordinator = 2
-2016-10-16 14:24:35.242 - Log.database - INFO - Started Database Instance with dbInitFile = ../config/dbPolicy.xml, Min DB Latency = 1 and Max DB Latency = 5
-2016-10-16 14:24:35.242 - Log.database - INFO - Initialized DB with:
-	Subject Attributes = {'4444': {'name': 'Tom', 'viewCount': '0'}, '2222': {'position': 'viewer'}, '3333': {'position': 'listener'}, '1111': {'position': 'employee', 'history': ''}}
-	Resource Attributes = {'777': {'type': 'song', 'viewCount': '0'}, '999': {'id': 'bank A'}, '666': {'movie': 'starWars'}, '888': {'type': 'movie', 'viewCount': '0'}}
-2016-10-16 14:24:35.246 - Log.client - INFO - Started Client 2
-2016-10-16 14:24:35.247 - Log.client - INFO - Started Client 1
-2016-10-16 14:24:35.249 - Log.client - INFO - Client 1 sending Request{Subject ID: 1111, Resource ID: 999, action: view} to coordinator 1
-2016-10-16 14:24:35.258 - Log.client - INFO - Client 2 sending Request{Subject ID: 1111, Resource ID: 999, action: read} to coordinator 1
-2016-10-16 14:24:35.272 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.273 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.273 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d371978>], 'conflict1': [<util.PolicyRule object at 0x10d371a20>], 'read': [<util.PolicyRule object at 0x10d369710>, <util.PolicyRule object at 0x10d369780>, <util.PolicyRule object at 0x10d369b00>, <util.PolicyRule object at 0x10d371940>], 'conflict3': [<util.PolicyRule object at 0x10d371a90>], 'view2': [<util.PolicyRule object at 0x10d3719e8>], 'view': [<util.PolicyRule object at 0x10d3719b0>], 'conflict2': [<util.PolicyRule object at 0x10d371a58>]}
-2016-10-16 14:24:35.273 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d3722b0>], 'conflict1': [<util.PolicyRule object at 0x10d372358>], 'read': [<util.PolicyRule object at 0x10d363f98>, <util.PolicyRule object at 0x10d36a0b8>, <util.PolicyRule object at 0x10d36a438>, <util.PolicyRule object at 0x10d372278>], 'conflict3': [<util.PolicyRule object at 0x10d3723c8>], 'view2': [<util.PolicyRule object at 0x10d372320>], 'view': [<util.PolicyRule object at 0x10d3722e8>], 'conflict2': [<util.PolicyRule object at 0x10d372390>]}
-2016-10-16 14:24:35.273 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.273 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-16 14:24:35.274 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d372470>], 'conflict1': [<util.PolicyRule object at 0x10d372518>], 'read': [<util.PolicyRule object at 0x10d363d30>, <util.PolicyRule object at 0x10d36a278>, <util.PolicyRule object at 0x10d36a5f8>, <util.PolicyRule object at 0x10d372438>], 'conflict3': [<util.PolicyRule object at 0x10d372588>], 'view2': [<util.PolicyRule object at 0x10d3724e0>], 'view': [<util.PolicyRule object at 0x10d3724a8>], 'conflict2': [<util.PolicyRule object at 0x10d372550>]}
-2016-10-16 14:24:35.275 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+2016-10-16 17:12:17.415 - Log.master - INFO - Starting the DistAlgo Project with config file: ../config/responseQueue.ini
+2016-10-16 17:12:17.511 - Log.master - INFO - Number of coordinators = 3
+2016-10-16 17:12:17.514 - Log.master - INFO - Number of clients = 2
+2016-10-16 17:12:17.514 - Log.master - INFO - Number of workers per coordinator = 2
+2016-10-16 17:12:17.523 - Log.client - INFO - Started Client 2
+2016-10-16 17:12:17.523 - Log.client - INFO - Started Client 1
+2016-10-16 17:12:17.524 - Log.client - INFO - Client 1 sending Request{Subject ID: 1111, Resource ID: 999, action: view} to coordinator 1
+2016-10-16 17:12:17.542 - Log.client - INFO - Client 2 sending Request{Subject ID: 1111, Resource ID: 999, action: read} to coordinator 1
+2016-10-16 17:12:17.554 - Log.database - INFO - Started Database Instance with dbInitFile = ../config/dbPolicy.xml, Min DB Latency = 1 and Max DB Latency = 5
+2016-10-16 17:12:17.555 - Log.database - INFO - Initialized DB with:
+	Subject Attributes = {'3333': {'position': 'listener'}, '1111': {'position': 'employee', 'history': ''}, '4444': {'viewCount': '0', 'name': 'Tom'}, '2222': {'position': 'viewer'}}
+	Resource Attributes = {'999': {'id': 'bank A'}, '888': {'type': 'movie', 'viewCount': '0'}, '666': {'movie': 'StarWars'}, '777': {'type': 'song', 'viewCount': '0'}}
+2016-10-16 17:12:17.566 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 17:12:17.568 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.569 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.569 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fc8f60>, <util.PolicyRule object at 0x103fcf5c0>, <util.PolicyRule object at 0x103fcf2b0>, <util.PolicyRule object at 0x103fd6390>], 'view': [<util.PolicyRule object at 0x103fd6400>], 'conflict2': [<util.PolicyRule object at 0x103fd64a8>], 'conflict1': [<util.PolicyRule object at 0x103fd6470>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd6438>], 'conflict3': [<util.PolicyRule object at 0x103fd64e0>], 'viewOnResource': [<util.PolicyRule object at 0x103fd63c8>]}
+2016-10-16 17:12:17.569 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fc8400>, <util.PolicyRule object at 0x103fcf780>, <util.PolicyRule object at 0x103fcf048>, <util.PolicyRule object at 0x103fd6550>], 'view': [<util.PolicyRule object at 0x103fd65c0>], 'conflict2': [<util.PolicyRule object at 0x103fd6668>], 'conflict1': [<util.PolicyRule object at 0x103fd6630>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd65f8>], 'conflict3': [<util.PolicyRule object at 0x103fd66a0>], 'viewOnResource': [<util.PolicyRule object at 0x103fd6588>]}
+2016-10-16 17:12:17.571 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
-2016-10-16 14:24:35.275 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.276 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d372780>], 'conflict1': [<util.PolicyRule object at 0x10d372828>], 'read': [<util.PolicyRule object at 0x10d36a518>, <util.PolicyRule object at 0x10d36a588>, <util.PolicyRule object at 0x10d36a908>, <util.PolicyRule object at 0x10d372748>], 'conflict3': [<util.PolicyRule object at 0x10d372898>], 'view2': [<util.PolicyRule object at 0x10d3727f0>], 'view': [<util.PolicyRule object at 0x10d3727b8>], 'conflict2': [<util.PolicyRule object at 0x10d372860>]}
-2016-10-16 14:24:35.276 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-16 14:24:35.278 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.275 - Log.coordinator - INFO - Request Queue Demo: Request cb95c9c6-68be-4384-aa19-ea0a69b8e80a received in Subject Coordinator
-2016-10-16 14:24:35.278 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-16 14:24:35.278 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d372550>], 'conflict1': [<util.PolicyRule object at 0x10d3725f8>], 'read': [<util.PolicyRule object at 0x10d3612e8>, <util.PolicyRule object at 0x10d36a358>, <util.PolicyRule object at 0x10d36a6d8>, <util.PolicyRule object at 0x10d372518>], 'conflict3': [<util.PolicyRule object at 0x10d372668>], 'view2': [<util.PolicyRule object at 0x10d3725c0>], 'view': [<util.PolicyRule object at 0x10d372588>], 'conflict2': [<util.PolicyRule object at 0x10d372630>]}
-2016-10-16 14:24:35.278 - Log.worker - DEBUG - Content of Policy File: {'view1': [<util.PolicyRule object at 0x10d372710>], 'conflict1': [<util.PolicyRule object at 0x10d3727b8>], 'read': [<util.PolicyRule object at 0x10d36a4a8>, <util.PolicyRule object at 0x10d36a518>, <util.PolicyRule object at 0x10d36a898>, <util.PolicyRule object at 0x10d3726d8>], 'conflict3': [<util.PolicyRule object at 0x10d372828>], 'view2': [<util.PolicyRule object at 0x10d372780>], 'view': [<util.PolicyRule object at 0x10d372748>], 'conflict2': [<util.PolicyRule object at 0x10d3727f0>]}
-2016-10-16 14:24:35.279 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:17.571 - Log.coordinator - INFO - Request Queue Demo: Request 72313c31-aaab-4aee-b84a-f178e68800d1 received in Subject Coordinator
+2016-10-16 17:12:17.572 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.275 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-16 14:24:35.281 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+2016-10-16 17:12:17.575 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 17:12:17.577 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.576 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 17:12:17.582 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fc8fd0>, <util.PolicyRule object at 0x103fd0320>, <util.PolicyRule object at 0x103fd02b0>, <util.PolicyRule object at 0x103fd60f0>], 'view': [<util.PolicyRule object at 0x103fd6160>], 'conflict2': [<util.PolicyRule object at 0x103fd6208>], 'conflict1': [<util.PolicyRule object at 0x103fd61d0>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd6198>], 'conflict3': [<util.PolicyRule object at 0x103fd6240>], 'viewOnResource': [<util.PolicyRule object at 0x103fd6128>]}
+2016-10-16 17:12:17.577 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.579 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
+	Subject ID = 1111
+	Resource ID = 999
+	Action = view
+	Subject Attribute Map = {}
+	Resource Attribute Map = {}
+2016-10-16 17:12:17.585 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fc8e80>, <util.PolicyRule object at 0x103fcf4e0>, <util.PolicyRule object at 0x103fcf1d0>, <util.PolicyRule object at 0x103fd62b0>], 'view': [<util.PolicyRule object at 0x103fd6320>], 'conflict2': [<util.PolicyRule object at 0x103fd63c8>], 'conflict1': [<util.PolicyRule object at 0x103fd6390>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd6358>], 'conflict3': [<util.PolicyRule object at 0x103fd6400>], 'viewOnResource': [<util.PolicyRule object at 0x103fd62e8>]}
+2016-10-16 17:12:17.586 - Log.coordinator - INFO - Request Queue Demo: Request 72313c31-aaab-4aee-b84a-f178e68800d1 received in Resource Coordinator
+2016-10-16 17:12:17.580 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
-2016-10-16 14:24:35.281 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:17.587 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.281 - Log.coordinator - INFO - Request Queue Demo: Request bd5c82b8-c55e-4703-8698-ca3e7ab4804c received in Subject Coordinator
-2016-10-16 14:24:35.282 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.587 - Log.coordinator - INFO - Request Queue Demo: Request 0bbcbbd4-c02f-40b8-8587-a2ec12689495 received in Subject Coordinator
+2016-10-16 17:12:17.587 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.282 - Log.coordinator - INFO - Request Queue Demo: Request cb95c9c6-68be-4384-aa19-ea0a69b8e80a received in Resource Coordinator
-2016-10-16 14:24:35.282 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
-	Subject ID = 1111
-	Resource ID = 999
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-16 14:24:35.284 - Log.worker - INFO - Received message from coordinator for Request:
+2016-10-16 17:12:17.587 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.588 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fcf160>, <util.PolicyRule object at 0x103fcf9e8>, <util.PolicyRule object at 0x103fcf2b0>, <util.PolicyRule object at 0x103fd67b8>], 'view': [<util.PolicyRule object at 0x103fd6828>], 'conflict2': [<util.PolicyRule object at 0x103fd68d0>], 'conflict1': [<util.PolicyRule object at 0x103fd6898>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd6860>], 'conflict3': [<util.PolicyRule object at 0x103fd6908>], 'viewOnResource': [<util.PolicyRule object at 0x103fd67f0>]}
+2016-10-16 17:12:17.589 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 17:12:17.590 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x103fc56d8>, <util.PolicyRule object at 0x103fcf7f0>, <util.PolicyRule object at 0x103fcf0b8>, <util.PolicyRule object at 0x103fd65c0>], 'view': [<util.PolicyRule object at 0x103fd6630>], 'conflict2': [<util.PolicyRule object at 0x103fd66d8>], 'conflict1': [<util.PolicyRule object at 0x103fd66a0>], 'viewOnSubject': [<util.PolicyRule object at 0x103fd6668>], 'conflict3': [<util.PolicyRule object at 0x103fd6710>], 'viewOnResource': [<util.PolicyRule object at 0x103fd65f8>]}
+2016-10-16 17:12:17.593 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 1111
 	Resource ID: 1111
 	Action: view}
-2016-10-16 14:24:35.285 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.594 - Log.worker - INFO - Request Queue Demo: Request 72313c31-aaab-4aee-b84a-f178e68800d1 received in Worker
+2016-10-16 17:12:17.595 - Log.worker - INFO - Request Queue Demo: Added worker delay to request 72313c31-aaab-4aee-b84a-f178e68800d1
+2016-10-16 17:12:17.595 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.285 - Log.worker - INFO - Request Queue Demo: Request cb95c9c6-68be-4384-aa19-ea0a69b8e80a received in Worker
-2016-10-16 14:24:35.285 - Log.coordinator - INFO - Request Queue Demo: Request bd5c82b8-c55e-4703-8698-ca3e7ab4804c received in Resource Coordinator
-2016-10-16 14:24:35.285 - Log.worker - INFO - Request Queue Demo: Added worker delay to request cb95c9c6-68be-4384-aa19-ea0a69b8e80a
-2016-10-16 14:24:35.285 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.596 - Log.coordinator - INFO - Request Queue Demo: Request 0bbcbbd4-c02f-40b8-8587-a2ec12689495 received in Resource Coordinator
+2016-10-16 17:12:17.596 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.288 - Log.worker - INFO - Received message from coordinator for Request:
+2016-10-16 17:12:17.599 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 1111
 	Resource ID: 1111
 	Action: read}
-2016-10-16 14:24:35.288 - Log.worker - INFO - Request Queue Demo: Request bd5c82b8-c55e-4703-8698-ca3e7ab4804c received in Worker
-2016-10-16 14:24:35.290 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.599 - Log.worker - INFO - Request Queue Demo: Request 0bbcbbd4-c02f-40b8-8587-a2ec12689495 received in Worker
+2016-10-16 17:12:17.601 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.294 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.603 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:35.295 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
-	Subject ID = 1111
-	Resource ID = 999
-	Action = read
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'employee', 'history': ''}
-	Resource Map read from DB = {'id': 'bank A'}
-2016-10-16 14:24:35.298 - Log.worker - INFO - Received following DB response:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.604 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -124,8 +114,8 @@
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'employee', 'history': ''}
 	Resource Map read from DB = {'id': 'bank A'}
-2016-10-16 14:24:35.299 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.605 - Log.worker - INFO - Received following DB response:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -134,12 +124,8 @@
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'employee', 'history': ''}
 	Resource Map read from DB = {'id': 'bank A'}
-	Map with updated subject attributes = {'history': 'bank A'}
-	Map with updated resource attributes = {}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-16 14:24:35.302 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:17.606 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -152,24 +138,38 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:35.302 - Log.coordinator - INFO - Request queue Demo: Response from Worker for Request bd5c82b8-c55e-4703-8698-ca3e7ab4804c received in Subject Coordinator
-2016-10-16 14:24:35.302 - Log.coordinator - INFO - Request queue Demo: Waiting for previous response to be serviced
-2016-10-16 14:24:36.287 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:17.608 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
+	Subject ID = 1111
+	Resource ID = 999
+	Action = read
+	Subject Attribute Map = {}
+	Resource Attribute Map = {}
+	Evaluation Result = True
+	Subject Map read from DB = {'position': 'employee', 'history': ''}
+	Resource Map read from DB = {'id': 'bank A'}
+	Map with updated subject attributes = {'history': 'bank A'}
+	Map with updated resource attributes = {}
+	Map with read subject attributes = {}
+	Map with read resource attributes = {}
+2016-10-16 17:12:17.608 - Log.coordinator - INFO - Request queue Demo: Response from Worker for Request 0bbcbbd4-c02f-40b8-8587-a2ec12689495 received in Subject Coordinator
+2016-10-16 17:12:17.608 - Log.coordinator - INFO - Request queue Demo: Waiting for previous response to be serviced
+2016-10-16 17:12:18.597 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:36.290 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:18.600 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-16 14:24:36.291 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:18.600 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
@@ -178,8 +178,8 @@
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'employee'}
 	Resource Map read from DB = {'type': '', 'viewCount': ''}
-2016-10-16 14:24:36.292 - Log.worker - INFO - Received following DB response:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:18.602 - Log.worker - INFO - Received following DB response:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
@@ -188,8 +188,8 @@
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'employee'}
 	Resource Map read from DB = {'type': '', 'viewCount': ''}
-2016-10-16 14:24:36.293 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:18.602 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
@@ -202,8 +202,8 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:36.295 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = cb95c9c6-68be-4384-aa19-ea0a69b8e80a
+2016-10-16 17:12:18.604 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 72313c31-aaab-4aee-b84a-f178e68800d1
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
@@ -216,17 +216,17 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:36.295 - Log.coordinator - INFO - Request queue Demo: Response from Worker for Request cb95c9c6-68be-4384-aa19-ea0a69b8e80a received in Subject Coordinator
-2016-10-16 14:24:36.295 - Log.coordinator - INFO - Request queue Demo: Servicing response for request cb95c9c6-68be-4384-aa19-ea0a69b8e80a
-2016-10-16 14:24:36.295 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
+2016-10-16 17:12:18.604 - Log.coordinator - INFO - Request queue Demo: Response from Worker for Request 72313c31-aaab-4aee-b84a-f178e68800d1 received in Subject Coordinator
+2016-10-16 17:12:18.604 - Log.coordinator - INFO - Request queue Demo: Servicing response for request 72313c31-aaab-4aee-b84a-f178e68800d1
+2016-10-16 17:12:18.605 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
 	Evaluation Result = Deny
 	Subject ID = 1111
 	Resource ID = 999
 	Action = view
-2016-10-16 14:24:36.297 - Log.client - INFO - Deny access to client 1 for Request{Subject ID: 1111, Resource ID: 999, action: view}
-2016-10-16 14:24:36.297 - Log.coordinator - INFO - Request queue Demo: Servicing response for request bd5c82b8-c55e-4703-8698-ca3e7ab4804c
-2016-10-16 14:24:36.297 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:18.606 - Log.client - INFO - Deny access to client 1 for Request{Subject ID: 1111, Resource ID: 999, action: view}
+2016-10-16 17:12:18.606 - Log.coordinator - INFO - Request queue Demo: Servicing response for request 0bbcbbd4-c02f-40b8-8587-a2ec12689495
+2016-10-16 17:12:18.607 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -239,8 +239,8 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:36.300 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+2016-10-16 17:12:18.609 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -253,13 +253,13 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:36.300 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'999': {}}
-2016-10-16 14:24:36.302 - Log.database - INFO - Received to update database for resource attributes with map: {'999': {}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-16 14:24:36.302 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
-2016-10-16 14:24:36.303 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
+2016-10-16 17:12:18.609 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'999': {}}
+2016-10-16 17:12:18.611 - Log.database - INFO - Received to update database for resource attributes with map: {'999': {}}. Accounting DB latency, will wait for latency of value 4 units duration before committing to DB
+2016-10-16 17:12:18.611 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
+2016-10-16 17:12:18.612 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
 	'conflict in resource attributes happened = False'
 
-	Request ID = bd5c82b8-c55e-4703-8698-ca3e7ab4804c
+	Request ID = 0bbcbbd4-c02f-40b8-8587-a2ec12689495
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
@@ -272,17 +272,17 @@
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-16 14:24:36.304 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
+2016-10-16 17:12:18.613 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
 	Evaluation Result = Allow
 	Subject ID = 1111
 	Resource ID = 999
 	Action = read
-2016-10-16 14:24:36.305 - Log.client - INFO - Allow access to client 2 for Request{Subject ID: 1111, Resource ID: 999, action: read}
-2016-10-16 14:24:36.305 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {'history': 'bank A'}
-2016-10-16 14:24:36.306 - Log.database - INFO - Received to update database for subject attributes with map: {'1111': {'history': 'bank A'}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-16 14:24:36.319 - Log.master - INFO - All processes completed. Terminating...
-2016-10-16 14:24:41.307 - Log.database - INFO - Successfully updated database for resource attributes with map: {'999': {}}
-2016-10-16 14:24:41.311 - Log.database - INFO - Successfully updated database for subject attributes with map: {'1111': {'history': 'bank A'}}
-2016-10-16 14:24:42.324 - Log.database - INFO - Dumping final contents of DB:
-	Subject Attributes = {'4444': {'name': 'Tom', 'viewCount': '0'}, '2222': {'position': 'viewer'}, '3333': {'position': 'listener'}, '1111': {'position': 'employee', 'history': 'bank A'}}
-	Resource Attributes = {'777': {'type': 'song', 'viewCount': '0'}, '999': {'type': '', 'id': 'bank A', 'viewCount': ''}, '666': {'movie': 'starWars'}, '888': {'type': 'movie', 'viewCount': '0'}}
+2016-10-16 17:12:18.614 - Log.client - INFO - Allow access to client 2 for Request{Subject ID: 1111, Resource ID: 999, action: read}
+2016-10-16 17:12:18.614 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {'history': 'bank A'}
+2016-10-16 17:12:18.615 - Log.database - INFO - Received to update database for subject attributes with map: {'1111': {'history': 'bank A'}}. Accounting DB latency, will wait for latency of value 4 units duration before committing to DB
+2016-10-16 17:12:18.629 - Log.master - INFO - All processes completed. Terminating...
+2016-10-16 17:12:22.617 - Log.database - INFO - Successfully updated database for resource attributes with map: {'999': {}}
+2016-10-16 17:12:22.617 - Log.database - INFO - Successfully updated database for subject attributes with map: {'1111': {'history': 'bank A'}}
+2016-10-16 17:12:24.639 - Log.database - INFO - Dumping final contents of DB:
+	Subject Attributes = {'3333': {'position': 'listener'}, '1111': {'position': 'employee', 'history': 'bank A'}, '4444': {'viewCount': '0', 'name': 'Tom'}, '2222': {'position': 'viewer'}}
+	Resource Attributes = {'999': {'type': '', 'id': 'bank A', 'viewCount': ''}, '888': {'type': 'movie', 'viewCount': '0'}, '666': {'movie': 'StarWars'}, '777': {'type': 'song', 'viewCount': '0'}}

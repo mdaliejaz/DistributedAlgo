@@ -138,6 +138,7 @@
             request
         The conflict number 1 listed above is the conflict generated with
         this scenario.
+
     DB updated:
         Initial Snapshot    (part of DB relevant to this example)
             Subject Attributes  = {'4444': {'viewCount': '0', 'name': 'Tom'}}
@@ -149,3 +150,52 @@
     # Note: We get this scenario most of the time in Subject Attribute conflict
             listed in test scenario 1. But it's not guaranteed to happen in
             scenario 1.
+
+4.  Request evaluation is delayed because it depends on a tentative update by
+    a request that has not yet committed or aborted.
+
+    Config File:    responseQueue.ini
+    Log File:       responseQueue.log
+
+    Description:
+    Scenario:   Access bank A first time with wrong and correct action names
+                Number of Clients:          2
+                Number of requests sent:    1 (per client)
+                Request:                    1 (Client 1)
+                    Subject Attributes:         position="employee" history=""
+                    Resource Attributes:        id="bank A"
+                    Action:                     name="view"
+                Request:                    2 (Client 2)
+                    Subject Attributes:         position="employee" history=""
+                    Resource Attributes:        id="bank A"
+                    Action:                     name="read"
+                Request 1 should be denied access
+                Request 2 should be allowed access
+    Request 1 from Client 1 takes more time to evaluate and hence the
+    response for Request 2 is not serviced although the response for Request
+    2 is provided much earlier. Request 1 should fail since there's no action
+    named view. This action was used in combination with subject and resource
+    ID to stall the response generation. Request 2 should be allowed access
+
+    Artificial Delays inserted:
+    Yes.
+    A flag 'responseQueueDelay' is used to delay response evaluation for
+    Request 1 by 1 second. This ensures that response for Request 2 is
+    generated before than that for Request 1. The service of response for
+    Request 2 is stalled until response for Request 1 is serviced.
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 1   (grep on log: "Allow access")
+    Number of denied accesses:  1   (grep on log: "Deny access")
+    Number of conflicts:        0   (grep on log: "Conflict Happened")
+
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes  = {'1111': {'position': 'employee',
+                                                'history': ''}}
+	        Resource Attributes = {'999': {'id': 'bank A'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes  = {'1111': {'position': 'employee',
+	                                            'history': 'bank A'}}
+	        Resource Attributes = {'999': {'id': 'bank A'}}
