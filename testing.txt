@@ -200,6 +200,9 @@
 	                                            'history': 'bank A'}}
 	        Resource Attributes = {'999': {'id': 'bank A'}}
 
+    Servicing order of Requests can be seen on console and also by grep in
+    log with 'Request Queue Demo:'
+
 
 5.  Request evaluation uses '$resource.Attribute' or '$subject.Attribute' value
 
@@ -249,3 +252,59 @@
 	        Subject Attributes  = {'1111': {'position': 'employee',
 	                                            'history': 'bank A'}}
 	        Resource Attributes = {'999': {'id': 'bank A'}}
+
+
+6.  Request evaluation should not be delayed for requests from different
+    subject and/or resource ID
+
+    Config File:    requestQueueDiffSubject.ini
+    Log File:       requestQueueDiffSubject.log
+
+    Description:
+    Scenario:   Access bank A first time and Listeners collectively can
+                listen to a song maximum 5 times
+                Number of Clients:          2
+                Number of requests sent:    1 (per client)
+                Request:                    1 (Client 1)
+                    Subject Attributes:         position="employee" history=""
+                    Resource Attributes:        id="bank A"
+                    Action:                     name="view"
+                Request:                    2 (Client 2)
+                    Subject Attributes:         position="listener"
+                    Resource Attributes:        type="song" viewCount="&lt;5"
+                    Action:                     name="view"
+                Both should be allowed access
+    Request 1 from Client 1 takes more time to evaluate but it does not stall
+    the Request 2 response evaluation as it's for a different Subject and
+    Resource ID.
+
+    Artificial Delays inserted:
+    Yes.
+    A flag 'responseQueueDelay' is used to delay response evaluation for
+    Request 1 by 1 second. This ensures that response for Request 2 is
+    generated before than that for Request 1. The service of response for
+    Request 2 is done without waiting for response for Request 1 to be serviced.
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 1   (grep on log: "Allow access")
+    Number of denied accesses:  1   (grep on log: "Deny access", bacause of
+                                                   wrong policy)
+    Number of conflicts:        0   (grep on log: "Conflict Happened")
+
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes  = {'1111': {'position': 'employee',
+                                                'history': ''}
+                                   '3333': {'position': 'listener'}}
+	        Resource Attributes = {'999': {'id': 'bank A'}
+	                               '777': {'viewCount': '0', 'type': 'song'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes  = {'1111': {'position': 'employee',
+	                                            'history': ''}
+	                               '3333': {'position': 'listener'}}
+	        Resource Attributes = {'999': {'id': 'bank A'}
+	                               '777': {'viewCount': '1', 'type': 'song'}}
+
+    Servicing order of Requests can be seen on console and also by grep in
+    log with 'Request Queue Demo:'
