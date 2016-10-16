@@ -9,6 +9,9 @@
     <subject id="3333">
         <attribute position="listener"/>
     </subject>
+    <subject id="4444">
+        <attribute name="Tom" viewCount="0"/>
+    </subject>
     <resource id="999">
         <attribute id="bank A"/>
     </resource>
@@ -17,5 +20,8 @@
     </resource>
     <resource id="777">
         <attribute type="song" viewCount="0"/>
+    </resource>
+    <resource id="666">
+        <attribute movie="starWars"/>
     </resource>
 </data>
