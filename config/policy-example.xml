@@ -35,7 +35,7 @@
         <subjectCondition position="viewer"></subjectCondition>
         <resourceCondition type="movie"
                            viewCount="&lt;2"></resourceCondition>
-        <action name="view"></action>
+        <action name="viewOnResource"></action>
         <resourceUpdate viewCount="++"></resourceUpdate>
     </rule>
 

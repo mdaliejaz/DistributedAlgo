@@ -1,1596 +1,805 @@
-2016-10-15 20:05:21.370 - Log.master - INFO - Starting the DistAlgo Project with config file: ../config/resourceConflict.ini
-2016-10-15 20:05:21.447 - Log.master - INFO - Number of coordinators = 3
-2016-10-15 20:05:21.448 - Log.master - INFO - Number of clients = 2
-2016-10-15 20:05:21.448 - Log.master - INFO - Number of workers per coordinator = 2
-2016-10-15 20:05:21.457 - Log.client - INFO - Started Client 1
-2016-10-15 20:05:21.463 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:05:21.466 - Log.client - INFO - Started Client 2
-2016-10-15 20:05:21.467 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:05:21.470 - Log.database - INFO - Started Database Instance with dbInitFile = ../config/dbPolicy.xml, Min DB Latency = 1 and Max DB Latency = 5
-2016-10-15 20:05:21.472 - Log.database - INFO - Initialized DB with:
-	Subject Attributes = {'1111': {'position': 'employee', 'history': ''}, '2222': {'position': 'viewer'}}
-	Resource Attributes = {'888': {'type': 'movie', 'viewCount': '0'}, '999': {'id': 'bank A'}}
-2016-10-15 20:05:21.510 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:05:21.512 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.513 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x10689acf8>, <util.PolicyRule object at 0x10689f358>, <util.PolicyRule object at 0x10689f2b0>, <util.PolicyRule object at 0x10689f9b0>], 'view': [<util.PolicyRule object at 0x10689f9e8>]}
-2016-10-15 20:05:21.514 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.515 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x10689af60>, <util.PolicyRule object at 0x10689f518>, <util.PolicyRule object at 0x10689f080>, <util.PolicyRule object at 0x10689fb70>], 'view': [<util.PolicyRule object at 0x10689fba8>]}
-2016-10-15 20:05:21.523 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.524 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x10689ac18>, <util.PolicyRule object at 0x10689a0f0>, <util.PolicyRule object at 0x1068a00b8>, <util.PolicyRule object at 0x1068a0710>], 'view': [<util.PolicyRule object at 0x1068a0748>]}
-2016-10-15 20:05:21.523 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.525 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x10689ac18>, <util.PolicyRule object at 0x10689f278>, <util.PolicyRule object at 0x10689f1d0>, <util.PolicyRule object at 0x10689f8d0>], 'view': [<util.PolicyRule object at 0x10689f908>]}
-2016-10-15 20:05:21.524 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:05:21.527 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.527 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:05:21.527 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:05:21.528 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x106896fd0>, <util.PolicyRule object at 0x10689f588>, <util.PolicyRule object at 0x10689f0f0>, <util.PolicyRule object at 0x10689fbe0>], 'view': [<util.PolicyRule object at 0x10689fc18>]}
-2016-10-15 20:05:21.528 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x10689f6d8>, <util.PolicyRule object at 0x10689f780>, <util.PolicyRule object at 0x10689f2e8>, <util.PolicyRule object at 0x10689fdd8>], 'view': [<util.PolicyRule object at 0x10689fe10>]}
-2016-10-15 20:05:21.529 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+2016-10-16 16:03:05.230 - Log.master - INFO - Starting the DistAlgo Project with config file: ../config/resourceConflict.ini
+2016-10-16 16:03:05.316 - Log.master - INFO - Number of coordinators = 3
+2016-10-16 16:03:05.317 - Log.master - INFO - Number of clients = 2
+2016-10-16 16:03:05.317 - Log.master - INFO - Number of workers per coordinator = 2
+2016-10-16 16:03:05.327 - Log.client - INFO - Started Client 1
+2016-10-16 16:03:05.329 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource} to coordinator 2
+2016-10-16 16:03:05.329 - Log.client - INFO - Started Client 2
+2016-10-16 16:03:05.333 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource} to coordinator 2
+2016-10-16 16:03:05.333 - Log.database - INFO - Started Database Instance with dbInitFile = ../config/dbPolicy.xml, Min DB Latency = 1 and Max DB Latency = 5
+2016-10-16 16:03:05.335 - Log.database - INFO - Initialized DB with:
+	Subject Attributes = {'4444': {'viewCount': '0', 'name': 'Tom'}, '3333': {'position': 'listener'}, '1111': {'history': '', 'position': 'employee'}, '2222': {'position': 'viewer'}}
+	Resource Attributes = {'777': {'type': 'song', 'viewCount': '0'}, '666': {'movie': 'StarWars'}, '888': {'type': 'movie', 'viewCount': '0'}, '999': {'id': 'bank A'}}
+2016-10-16 16:03:05.367 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 16:03:05.370 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.371 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.371 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d02f98>, <util.PolicyRule object at 0x104d0c3c8>, <util.PolicyRule object at 0x104d0c048>, <util.PolicyRule object at 0x104d12198>], 'viewOnResource': [<util.PolicyRule object at 0x104d121d0>], 'conflict1': [<util.PolicyRule object at 0x104d12278>], 'conflict3': [<util.PolicyRule object at 0x104d122e8>], 'viewOnSubject': [<util.PolicyRule object at 0x104d12240>], 'view': [<util.PolicyRule object at 0x104d12208>], 'conflict2': [<util.PolicyRule object at 0x104d122b0>]}
+2016-10-16 16:03:05.372 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d04da0>, <util.PolicyRule object at 0x104d04e48>, <util.PolicyRule object at 0x104d04ac8>, <util.PolicyRule object at 0x104d0cc18>], 'viewOnResource': [<util.PolicyRule object at 0x104d0cc50>], 'conflict1': [<util.PolicyRule object at 0x104d0ccf8>], 'conflict3': [<util.PolicyRule object at 0x104d0cd68>], 'viewOnSubject': [<util.PolicyRule object at 0x104d0ccc0>], 'view': [<util.PolicyRule object at 0x104d0cc88>], 'conflict2': [<util.PolicyRule object at 0x104d0cd30>]}
+2016-10-16 16:03:05.367 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 16:03:05.373 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.373 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.373 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.373 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d02f28>, <util.PolicyRule object at 0x104d0c518>, <util.PolicyRule object at 0x104d0c198>, <util.PolicyRule object at 0x104d122e8>], 'viewOnResource': [<util.PolicyRule object at 0x104d12320>], 'conflict1': [<util.PolicyRule object at 0x104d123c8>], 'conflict3': [<util.PolicyRule object at 0x104d12438>], 'viewOnSubject': [<util.PolicyRule object at 0x104d12390>], 'view': [<util.PolicyRule object at 0x104d12358>], 'conflict2': [<util.PolicyRule object at 0x104d12400>]}
+2016-10-16 16:03:05.374 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d04f60>, <util.PolicyRule object at 0x104d04cc0>, <util.PolicyRule object at 0x104d0c048>, <util.PolicyRule object at 0x104d0cdd8>], 'viewOnResource': [<util.PolicyRule object at 0x104d0ce10>], 'conflict1': [<util.PolicyRule object at 0x104d0ceb8>], 'conflict3': [<util.PolicyRule object at 0x104d0cf28>], 'viewOnSubject': [<util.PolicyRule object at 0x104d0ce80>], 'view': [<util.PolicyRule object at 0x104d0ce48>], 'conflict2': [<util.PolicyRule object at 0x104d0cef0>]}
+2016-10-16 16:03:05.370 - Log.coordinator - INFO - Starting Coordinator with 2 workers
+2016-10-16 16:03:05.373 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d04eb8>, <util.PolicyRule object at 0x104d0c2e8>, <util.PolicyRule object at 0x104d0c240>, <util.PolicyRule object at 0x104d120b8>], 'viewOnResource': [<util.PolicyRule object at 0x104d120f0>], 'conflict1': [<util.PolicyRule object at 0x104d12198>], 'conflict3': [<util.PolicyRule object at 0x104d12208>], 'viewOnSubject': [<util.PolicyRule object at 0x104d12160>], 'view': [<util.PolicyRule object at 0x104d12128>], 'conflict2': [<util.PolicyRule object at 0x104d121d0>]}
+2016-10-16 16:03:05.375 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
+2016-10-16 16:03:05.376 - Log.worker - DEBUG - Content of Policy File: {'read': [<util.PolicyRule object at 0x104d04d30>, <util.PolicyRule object at 0x104d0c128>, <util.PolicyRule object at 0x104d0c080>, <util.PolicyRule object at 0x104d0ceb8>], 'viewOnResource': [<util.PolicyRule object at 0x104d0cef0>], 'conflict1': [<util.PolicyRule object at 0x104d0cf98>], 'conflict3': [<util.PolicyRule object at 0x104d12048>], 'viewOnSubject': [<util.PolicyRule object at 0x104d0cf60>], 'view': [<util.PolicyRule object at 0x104d0cf28>], 'conflict2': [<util.PolicyRule object at 0x104d0cfd0>]}
+2016-10-16 16:03:05.376 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.530 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+	Action = viewOnResource
+2016-10-16 16:03:05.377 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.532 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+2016-10-16 16:03:05.379 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.533 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Action = viewOnResource
+2016-10-16 16:03:05.380 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.533 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.379 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.533 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.380 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.535 - Log.worker - INFO - Received message from coordinator for Request:
+2016-10-16 16:03:05.383 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.536 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Action: viewOnResource}
+2016-10-16 16:03:05.383 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.535 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.383 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.536 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+2016-10-16 16:03:05.383 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.538 - Log.worker - INFO - Received message from coordinator for Request:
+2016-10-16 16:03:05.385 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.539 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Action: viewOnResource}
+2016-10-16 16:03:05.386 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.538 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.386 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.541 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.388 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
-2016-10-15 20:05:21.544 - Log.worker - INFO - Received following DB response:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
-2016-10-15 20:05:21.545 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
+2016-10-16 16:03:05.390 - Log.worker - INFO - Received following DB response:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:05:21.545 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
+2016-10-16 16:03:05.391 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {}
+	Evaluation Result = True
+	Subject Map read from DB = {'position': 'viewer'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.545 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+2016-10-16 16:03:05.391 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {}
+2016-10-16 16:03:05.392 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
-2016-10-15 20:05:21.547 - Log.worker - INFO - Received following DB response:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
+2016-10-16 16:03:05.394 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
-2016-10-15 20:05:21.547 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.548 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+2016-10-16 16:03:05.394 - Log.worker - INFO - Received following DB response:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:05:21.548 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
+2016-10-16 16:03:05.395 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.550 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+2016-10-16 16:03:05.395 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.551 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '1'}}
-2016-10-15 20:05:21.551 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+2016-10-16 16:03:05.399 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.552 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '1'}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
-2016-10-15 20:05:21.552 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
-2016-10-15 20:05:21.554 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
+2016-10-16 16:03:05.397 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {}
+	Evaluation Result = True
+	Subject Map read from DB = {'position': 'viewer'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
+	Map with updated subject attributes = {}
+	Map with updated resource attributes = {'viewCount': '1'}
+	Map with read subject attributes = {}
+	Map with read resource attributes = {}
+2016-10-16 16:03:05.400 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '1'}}
+2016-10-16 16:03:05.402 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '1'}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
+2016-10-16 16:03:05.402 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
+2016-10-16 16:03:05.404 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
 	'conflict in resource attributes happened = False'
 
-	Request ID = 5b86d426-0ded-4c03-a372-bbfdca4510ee
+	Request ID = 02203f34-a6ef-47b3-b333-ca24610d573d
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.555 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
+2016-10-16 16:03:05.404 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
 	Evaluation Result = Allow
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.556 - Log.client - INFO - Allow access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:05:21.556 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:05:21.556 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
-2016-10-15 20:05:21.558 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
-2016-10-15 20:05:21.558 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Action = viewOnResource
+2016-10-16 16:03:05.405 - Log.client - INFO - Allow access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource}
+2016-10-16 16:03:05.405 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource} to coordinator 2
+2016-10-16 16:03:05.405 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
+2016-10-16 16:03:05.407 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
+2016-10-16 16:03:05.407 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.560 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+2016-10-16 16:03:05.409 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.560 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from database for Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390, was updated by a previous request
-2016-10-15 20:05:21.561 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
-2016-10-15 20:05:21.561 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+2016-10-16 16:03:05.409 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from database for Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b, was updated by a previous request
+2016-10-16 16:03:05.410 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.561 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Action = viewOnResource
+2016-10-16 16:03:05.410 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
+2016-10-16 16:03:05.410 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.563 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+2016-10-16 16:03:05.412 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.563 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
+2016-10-16 16:03:05.412 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
 	'conflict in resource attributes happened = True'
 
-	Request ID = a0b3cba7-78c8-43cd-9330-46fdca3d4390
+	Request ID = 1f8be4ed-7f34-4e34-90d9-28025aa1118b
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'viewCount': '0', 'type': 'movie'}
+	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '1'}
 	Map with read subject attributes = {}
 	Map with read resource attributes = {}
-2016-10-15 20:05:21.563 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+2016-10-16 16:03:05.412 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.564 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.412 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.565 - Log.worker - INFO - Received message from coordinator for Request:
+	Action = viewOnResource
+2016-10-16 16:03:05.414 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.565 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Action: viewOnResource}
+2016-10-16 16:03:05.414 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.566 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.415 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.567 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Action = viewOnResource
+2016-10-16 16:03:05.415 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.567 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+2016-10-16 16:03:05.416 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.567 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.416 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.569 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+2016-10-16 16:03:05.417 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.569 - Log.worker - INFO - Received following DB response:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+2016-10-16 16:03:05.417 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.418 - Log.worker - INFO - Received following DB response:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.569 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+2016-10-16 16:03:05.418 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.569 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.571 - Log.worker - INFO - Received message from coordinator for Request:
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.419 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.571 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Action: viewOnResource}
+2016-10-16 16:03:05.419 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.571 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.420 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.572 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.421 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.421 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.573 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.421 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.573 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.575 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+2016-10-16 16:03:05.423 - Log.worker - INFO - Received following DB response:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.575 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '2'}}
-2016-10-15 20:05:21.575 - Log.worker - INFO - Received following DB response:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+2016-10-16 16:03:05.423 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.575 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.576 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '2'}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
-2016-10-15 20:05:21.577 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
-2016-10-15 20:05:21.578 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.423 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.579 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.423 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '2'}}
+2016-10-16 16:03:05.425 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '2'}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
+2016-10-16 16:03:05.425 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
+2016-10-16 16:03:05.425 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
+	Subject ID = 2222
+	Resource ID = 888
+	Action = viewOnResource
+	Subject Attribute Map = {}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
+	Evaluation Result = True
+	Subject Map read from DB = {'position': 'viewer'}
+	Resource Map read from DB = {'type': 'movie'}
+	Map with updated subject attributes = {}
+	Map with updated resource attributes = {'viewCount': '2'}
+	Map with read subject attributes = {}
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.427 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
 	'conflict in resource attributes happened = False'
 
-	Request ID = 031d6da8-86a0-4e5c-afe2-c7cc8b1e32aa
+	Request ID = 595aaada-9ccd-4ae4-8f49-4103299f4b80
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.579 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.427 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
 	Evaluation Result = Allow
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.580 - Log.client - INFO - Allow access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:05:21.581 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
-2016-10-15 20:05:21.582 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
-2016-10-15 20:05:21.583 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Action = viewOnResource
+2016-10-16 16:03:05.428 - Log.client - INFO - Allow access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource}
+2016-10-16 16:03:05.429 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
+2016-10-16 16:03:05.430 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 2 units duration before committing to DB
+2016-10-16 16:03:05.430 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.585 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.432 - Log.coordinator - INFO - Resource Coordinator: Received the following response from Subject Coordinator to check for resource attribute conflicts: 
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.585 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from resource cache for this request happened to be updated by some other previous request
-2016-10-15 20:05:21.585 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
-2016-10-15 20:05:21.587 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.433 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from resource cache for this request happened to be updated by some other previous request
+2016-10-16 16:03:05.433 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
+2016-10-16 16:03:05.434 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
 	'conflict in resource attributes happened = True'
 
-	Request ID = 2721a5ed-161f-4c0f-bdc5-ce24eee0e895
+	Request ID = b9edd0d3-c330-444d-b595-d7a44b79bf17
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476576321551209)}
+	Resource Attribute Map = {'viewCount': ('1', 1476648185400222)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {'viewCount': '2'}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476576321551209)}
-2016-10-15 20:05:21.587 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
+	Map with read resource attributes = {'viewCount': ('1', 1476648185400222)}
+2016-10-16 16:03:05.434 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.589 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+	Action = viewOnResource
+2016-10-16 16:03:05.436 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.590 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+	Action = viewOnResource
+2016-10-16 16:03:05.436 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.591 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+2016-10-16 16:03:05.438 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.591 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+2016-10-16 16:03:05.438 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.593 - Log.worker - INFO - Received message from coordinator for Request:
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.439 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.593 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+	Action: viewOnResource}
+2016-10-16 16:03:05.440 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.594 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.441 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.594 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.441 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.596 - Log.worker - INFO - Received following DB response:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+2016-10-16 16:03:05.442 - Log.worker - INFO - Received following DB response:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.596 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+2016-10-16 16:03:05.443 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = False
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.597 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 48581265-25a3-418f-9ef7-49e0eb58704d
+	Map with read resource attributes = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.444 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 26efb50f-fb26-422e-9ca2-7c854fa39846
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = False
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.598 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
+	Map with read resource attributes = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.444 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
 	Evaluation Result = Deny
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.599 - Log.client - INFO - Deny access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:05:21.599 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:05:21.600 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
+	Action = viewOnResource
+2016-10-16 16:03:05.445 - Log.client - INFO - Deny access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource}
+2016-10-16 16:03:05.446 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource} to coordinator 2
+2016-10-16 16:03:05.447 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.601 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+	Action = viewOnResource
+2016-10-16 16:03:05.447 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.602 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+2016-10-16 16:03:05.448 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
 	Resource Attribute Map = {}
-2016-10-15 20:05:21.602 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+2016-10-16 16:03:05.449 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.604 - Log.worker - INFO - Received message from coordinator for Request:
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.450 - Log.worker - INFO - Received message from coordinator for Request:
 	Subject ID: 2222
 	Resource ID: 2222
-	Action: view}
-2016-10-15 20:05:21.604 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+	Action: viewOnResource}
+2016-10-16 16:03:05.450 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.605 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.452 - Log.database - INFO - Received request from Worker to get attributes for following request:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.606 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.452 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.607 - Log.worker - INFO - Received following DB response:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+2016-10-16 16:03:05.453 - Log.worker - INFO - Received following DB response:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = True
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:05:21.607 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+2016-10-16 16:03:05.454 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = False
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.609 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = cd0c9c49-568f-477f-86b8-c48e3eac4cb5
+	Map with read resource attributes = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.455 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
+	Request ID = 7657ff82-8d9e-42ae-8a57-954425deb537
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
+	Action = viewOnResource
 	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476576321575458)}
+	Resource Attribute Map = {'viewCount': ('2', 1476648185423910)}
 	Evaluation Result = False
 	Subject Map read from DB = {'position': 'viewer'}
 	Resource Map read from DB = {'type': 'movie'}
 	Map with updated subject attributes = {}
 	Map with updated resource attributes = {}
 	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476576321575458)}
-2016-10-15 20:05:21.609 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
+	Map with read resource attributes = {'viewCount': ('2', 1476648185423910)}
+2016-10-16 16:03:05.455 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
 	Evaluation Result = Deny
 	Subject ID = 2222
 	Resource ID = 888
-	Action = view
-2016-10-15 20:05:21.610 - Log.client - INFO - Deny access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:05:21.614 - Log.master - INFO - All processes completed. Terminating...
-2016-10-15 20:25:47.053 - Log.master - INFO - Starting the DistAlgo Project with config file: ../config/resourceConflict.ini
-2016-10-15 20:25:47.133 - Log.master - INFO - Number of coordinators = 3
-2016-10-15 20:25:47.134 - Log.master - INFO - Number of clients = 2
-2016-10-15 20:25:47.134 - Log.master - INFO - Number of workers per coordinator = 2
-2016-10-15 20:25:47.140 - Log.client - INFO - Started Client 1
-2016-10-15 20:25:47.141 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:25:47.142 - Log.client - INFO - Started Client 2
-2016-10-15 20:25:47.145 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:25:47.152 - Log.database - INFO - Started Database Instance with dbInitFile = ../config/dbPolicy.xml, Min DB Latency = 1 and Max DB Latency = 5
-2016-10-15 20:25:47.153 - Log.database - INFO - Initialized DB with:
-	Subject Attributes = {'2222': {'position': 'viewer'}, '1111': {'position': 'employee', 'history': ''}, '3333': {'position': 'listener'}}
-	Resource Attributes = {'999': {'id': 'bank A'}, '777': {'type': 'song', 'viewCount': '0'}, '888': {'type': 'movie', 'viewCount': '0'}}
-2016-10-15 20:25:47.167 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:25:47.169 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.169 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.169 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.170 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b58d0>, <util.PolicyRule object at 0x1108b5908>], 'read': [<util.PolicyRule object at 0x1108b0be0>, <util.PolicyRule object at 0x1108b5080>, <util.PolicyRule object at 0x1108b50f0>, <util.PolicyRule object at 0x1108b5898>]}
-2016-10-15 20:25:47.170 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b7da0>, <util.PolicyRule object at 0x1108b7dd8>], 'read': [<util.PolicyRule object at 0x1108aef98>, <util.PolicyRule object at 0x1108b7390>, <util.PolicyRule object at 0x1108b75c0>, <util.PolicyRule object at 0x1108b7d68>]}
-2016-10-15 20:25:47.166 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:25:47.170 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.171 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.171 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.171 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b7710>, <util.PolicyRule object at 0x1108b7748>], 'read': [<util.PolicyRule object at 0x1108b0e48>, <util.PolicyRule object at 0x1108b0cc0>, <util.PolicyRule object at 0x1108b0ef0>, <util.PolicyRule object at 0x1108b76d8>]}
-2016-10-15 20:25:47.172 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b7c50>, <util.PolicyRule object at 0x1108b7c88>], 'read': [<util.PolicyRule object at 0x1108aef28>, <util.PolicyRule object at 0x1108b7240>, <util.PolicyRule object at 0x1108b7470>, <util.PolicyRule object at 0x1108b7c18>]}
-2016-10-15 20:25:47.174 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.175 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.176 - Log.coordinator - INFO - Starting Coordinator with 2 workers
-2016-10-15 20:25:47.177 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.178 - Log.worker - INFO - Started worker to evaluate policy in file: ../config/policy-example.xml
-2016-10-15 20:25:47.178 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b79b0>, <util.PolicyRule object at 0x1108b79e8>], 'read': [<util.PolicyRule object at 0x1108b0cc0>, <util.PolicyRule object at 0x1108b7128>, <util.PolicyRule object at 0x1108b71d0>, <util.PolicyRule object at 0x1108b7978>]}
-2016-10-15 20:25:47.178 - Log.worker - DEBUG - Content of Policy File: {'view': [<util.PolicyRule object at 0x1108b7b70>, <util.PolicyRule object at 0x1108b7ba8>], 'read': [<util.PolicyRule object at 0x1108b0e48>, <util.PolicyRule object at 0x1108b7160>, <util.PolicyRule object at 0x1108b7390>, <util.PolicyRule object at 0x1108b7b38>]}
-2016-10-15 20:25:47.179 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.179 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.181 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.181 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.181 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.181 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.184 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.184 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.184 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.185 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-2016-10-15 20:25:47.188 - Log.worker - INFO - Received following DB response:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-2016-10-15 20:25:47.189 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.190 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.190 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-2016-10-15 20:25:47.193 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.194 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.194 - Log.worker - INFO - Received following DB response:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-2016-10-15 20:25:47.194 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.197 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.197 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '1'}}
-2016-10-15 20:25:47.198 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.199 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '1'}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-15 20:25:47.199 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
-2016-10-15 20:25:47.201 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
-	'conflict in resource attributes happened = False'
-
-	Request ID = a2996206-bf00-4c8d-a380-e41e05e7ff1f
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.201 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
-	Evaluation Result = Allow
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.202 - Log.client - INFO - Allow access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:25:47.203 - Log.client - INFO - Client 1 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:25:47.203 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
-2016-10-15 20:25:47.205 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-15 20:25:47.205 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.206 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.207 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from database for Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10, was updated by a previous request
-2016-10-15 20:25:47.207 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
-2016-10-15 20:25:47.207 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.207 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.209 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.209 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.210 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
-	'conflict in resource attributes happened = True'
-
-	Request ID = 4f722745-b6eb-4858-8570-9cfe56c41b10
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie', 'viewCount': '0'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '1'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {}
-2016-10-15 20:25:47.210 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.211 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.211 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.212 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.212 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.213 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.213 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.214 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.215 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.215 - Log.worker - INFO - Received following DB response:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.215 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.216 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.217 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.217 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.217 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.218 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.219 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.219 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.220 - Log.coordinator - INFO - Resource Coordinator: Sending message to DB to commit the updated resource attributes: {'888': {'viewCount': '2'}}
-2016-10-15 20:25:47.221 - Log.worker - INFO - Received following DB response:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.221 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.222 - Log.database - INFO - Received to update database for resource attributes with map: {'888': {'viewCount': '2'}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-15 20:25:47.222 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = False'
-2016-10-15 20:25:47.223 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.224 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
-	'conflict in resource attributes happened = False'
-
-	Request ID = 50b77657-dcb8-4092-a242-9d69c9340813
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.225 - Log.coordinator - INFO - Subject Coordinator: Sending success result to Client:
-	Evaluation Result = Allow
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.226 - Log.client - INFO - Allow access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:25:47.226 - Log.coordinator - INFO - Subject Coordinator: Sending message to DB to commit the updated subject attributes: {}
-2016-10-15 20:25:47.228 - Log.database - INFO - Received to update database for subject attributes with map: {'2222': {}}. Accounting DB latency, will wait for latency of value 5 units duration before committing to DB
-2016-10-15 20:25:47.228 - Log.coordinator - INFO - Subject Coordinator: No conflicts in subject attributes. Sending response to Resource Coordinator to check for resource attribute conflicts: 
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.230 - Log.coordinator - INFO - Resource Coordinator: Received the foolowing response from Subject Coordinator to check for resource attribute conflicts: 
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.230 - Log.coordinator - INFO - Resource Coordinator: Conflict Happened: The attribute viewCount read from resource cache for this request happened to be updated by some other previous request
-2016-10-15 20:25:47.230 - Log.coordinator - INFO - Resource Coordinator: Sending  back the response to Subject Coordinator with status 'conflict in resource attributes happened = True'
-2016-10-15 20:25:47.232 - Log.coordinator - INFO - Subject Coordinator: Received following response from Resource Coordinator with:
-	'conflict in resource attributes happened = True'
-
-	Request ID = e178e96a-50b8-413e-9caa-5eddcb019890
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('1', 1476577547197826)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {'viewCount': '2'}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('1', 1476577547197826)}
-2016-10-15 20:25:47.232 - Log.coordinator - INFO - Subject Coordinator: Restarting request due to conflict in resource attribute(s) for request:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.234 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.234 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.235 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.236 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.237 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.237 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.239 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.239 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.241 - Log.worker - INFO - Received following DB response:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.241 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = False
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.242 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = c73ecada-4641-4661-aa98-562d434260d9
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = False
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.243 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
-	Evaluation Result = Deny
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.244 - Log.client - INFO - Deny access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:25:47.244 - Log.client - INFO - Client 2 sending Request{Subject ID: 2222, Resource ID: 888, action: view} to coordinator 2
-2016-10-15 20:25:47.245 - Log.coordinator - INFO - Subject Coordinator: Received request with following parameters from Client:
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.246 - Log.coordinator - INFO - Subject Coordinator: Sending the following parameters to Resource Coordinator:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.247 - Log.coordinator - INFO - Resource Coordinator: Received the following parameters from Subject Coordinator:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {}
-2016-10-15 20:25:47.247 - Log.coordinator - INFO - Resource Coordinator: Sending the following parameters to Worker:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.248 - Log.worker - INFO - Received message from coordinator for Request:
-	Subject ID: 2222
-	Resource ID: 2222
-	Action: view}
-2016-10-15 20:25:47.249 - Log.worker - INFO - Sending message to initiate database read for attributes not in cache for Request:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.250 - Log.database - INFO - Received request from Worker to get attributes for following request:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.250 - Log.database - INFO - Sending following response to Worker with updated attributes from database:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.252 - Log.worker - INFO - Received following DB response:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = True
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-2016-10-15 20:25:47.252 - Log.worker - INFO - Sending following Worker Response to Subject Coordinator:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = False
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.254 - Log.coordinator - INFO - Subject Coordinator: Received the following parameters from Worker:
-	Request ID = ff93793a-d3a0-46d5-8dc7-4610085e6079
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-	Subject Attribute Map = {}
-	Resource Attribute Map = {'viewCount': ('2', 1476577547220213)}
-	Evaluation Result = False
-	Subject Map read from DB = {'position': 'viewer'}
-	Resource Map read from DB = {'type': 'movie'}
-	Map with updated subject attributes = {}
-	Map with updated resource attributes = {}
-	Map with read subject attributes = {}
-	Map with read resource attributes = {'viewCount': ('2', 1476577547220213)}
-2016-10-15 20:25:47.254 - Log.coordinator - INFO - Subject Coordinator: Sending failure result to Client:
-	Evaluation Result = Deny
-	Subject ID = 2222
-	Resource ID = 888
-	Action = view
-2016-10-15 20:25:47.255 - Log.client - INFO - Deny access to client 2 for Request{Subject ID: 2222, Resource ID: 888, action: view}
-2016-10-15 20:25:47.259 - Log.master - INFO - All processes completed. Terminating...
+	Action = viewOnResource
+2016-10-16 16:03:05.456 - Log.client - INFO - Deny access to client 1 for Request{Subject ID: 2222, Resource ID: 888, action: viewOnResource}
+2016-10-16 16:03:05.460 - Log.master - INFO - All processes completed. Terminating...
+2016-10-16 16:03:07.403 - Log.database - INFO - Successfully updated database for resource attributes with map: {'888': {'viewCount': '1'}}
+2016-10-16 16:03:07.413 - Log.database - INFO - Successfully updated database for subject attributes with map: {'2222': {}}
+2016-10-16 16:03:07.431 - Log.database - INFO - Successfully updated database for resource attributes with map: {'888': {'viewCount': '2'}}
+2016-10-16 16:03:07.433 - Log.database - INFO - Successfully updated database for subject attributes with map: {'2222': {}}
+2016-10-16 16:03:11.470 - Log.database - INFO - Dumping final contents of DB:
+	Subject Attributes = {'4444': {'viewCount': '0', 'name': 'Tom'}, '3333': {'position': 'listener'}, '1111': {'history': '', 'position': 'employee'}, '2222': {'position': 'viewer'}}
+	Resource Attributes = {'777': {'type': 'song', 'viewCount': '0'}, '666': {'movie': 'StarWars'}, '888': {'type': 'movie', 'viewCount': '2'}, '999': {'id': 'bank A'}}

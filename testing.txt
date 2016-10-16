@@ -12,7 +12,7 @@
                 Number of requests sent:    2 (per client)
                 Subject Attributes:         name="Tom" viewCount="&lt;2"
                 Resource Attributes:        type="movie"
-                Action:                     name="view"
+                Action:                     name="viewOnSubject"
                 Two requests should be allowed
                 Two requests should be denied
     Two clients with same subject and resource ID for same action send two
@@ -38,3 +38,38 @@
 	        Resource Attributes = {'666': {'movie': 'StarWars'}}
 
 
+2.  Request Evaluation aborts due to conflict in Resource Attribute
+
+    Config File:    resourceConflict.ini
+    Log File:       resourceConflict.log
+
+    Description:
+    Scenario:   Tom can watch Star Wars max two times
+                Number of Clients:          2
+                Number of requests sent:    2 (per client)
+                Subject Attributes:         position="viewer"
+                Resource Attributes:        type="movie" viewCount="&lt;2"
+                Action:                     name="viewOnResource"
+                Two requests should be allowed
+                Two requests should be denied
+    Two clients with same subject and resource ID for same action send two
+    requests each. All these requests try to update the same resource attribute
+    resulting in a conflict and hence a restart due to conflict in Resource
+    Attribute.
+
+    Artificial Delays inserted:
+    None
+
+    Outcome:
+    The test passed as expected.
+    Number of allowed accesses: 2   (grep on log: "Allow access")
+    Number of denied accesses:  2   (grep on log: "Deny access")
+    Number of conflicts:        2   (grep on log: "Resource Coordinator:
+                                                            Conflict Happened:")
+    DB updated:
+        Initial Snapshot    (part of DB relevant to this example)
+            Subject Attributes = {'2222': {'position': 'viewer'}}
+	        Resource Attributes = {'888': {'type': 'movie', 'viewCount': '0'}}
+	    Final Snapshot      (part of DB relevant to this example)
+	        Subject Attributes = {'2222': {'position': 'viewer'}}
+	        Resource Attributes = {'888': {'type': 'movie', 'viewCount': '2'}}
