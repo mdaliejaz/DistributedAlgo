@@ -1,4 +1,0 @@
-pseudocode/ current version of material from phase1
-
-pseudocode/ should contain updated pseudocode, consistent with the code in src/.
-the grader may refer to the pseudocode to help understand your code.
