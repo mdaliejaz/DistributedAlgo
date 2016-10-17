@@ -85,4 +85,6 @@
   REFERENCE:
 
   --> Dist Algo decumentation
-  --> For logging: http://stackoverflow.com/questions/13649664/how-to-use-logging-with-pythons-fileconfig-and-configure-the-logfile-filename
+  --> For logging: http://stackoverflow.com/questions/13649664/
+                            how-to-use-logging-with-pythons-fileconfig-
+                            and-configure-the-logfile-filename
